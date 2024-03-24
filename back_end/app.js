@@ -8,8 +8,8 @@ const errorhandler = require("errorhandler");
 const expressSession = require("express-session");
 const cookieParser = require("cookie-parser");
 
-
-
+const passportConfig = require("./middleware/authentication");
+const rootRouter = require("./router/index");
 const db = require("./persistance/db");
 const app = express();
 
@@ -44,6 +44,6 @@ app.use(cookieParser());
 
 db.connect(process.env.DB_URL);
 
-
+app.use("/api", rootRouter);
 
 module.exports = app;
