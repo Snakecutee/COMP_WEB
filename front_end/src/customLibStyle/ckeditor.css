@@ -10,9 +10,9 @@
 
 .ck.ck-toolbar {
     z-index: 1;
-    border: 0;
+ border: 0;
     border-radius: 0;
-    box-shadow: 0 0 5px hsla(0, 0%, 0%, .2);
+    box-shadow: 0 0 5px hsla( 0,0%,0%,.2 );
     width: 100%;
     border-bottom: 1px solid var(--ck-color-toolbar-border);
     position: sticky !important;
@@ -28,7 +28,7 @@
 }
 
 .ck-editor_content {
-    padding: calc(2 * var(--ck-spacing-large));
+    padding: calc( 2 * var(--ck-spacing-large) );
     background: var(--ck-color-base-foreground);
 
     overflow-y: scroll;
@@ -40,11 +40,11 @@
 
     padding: 1cm 2cm 2cm;
 
-    border: 1px hsl(0, 0%, 82.7%) solid;
+    border: 1px hsl( 0,0%,82.7% ) solid;
     border-radius: var(--ck-border-radius);
     background: white;
 
-    box-shadow: 0 0 5px hsla(0, 0%, 0%, .1);
+    box-shadow: 0 0 5px hsla( 0,0%,0%,.1 );
 
     margin: 0 auto;
 }
@@ -55,7 +55,7 @@
 }
 
 .ck-editor .ck-heading-dropdown .ck-list .ck-button__label {
-    line-height: calc(1.7 * var(--ck-line-height-base) * var(--ck-font-size-base));
+    line-height: calc( 1.7 * var(--ck-line-height-base) * var(--ck-font-size-base) );
     min-width: 6em;
 }
 
@@ -86,7 +86,7 @@
 .ck-editor .ck-heading-dropdown .ck-heading_heading2 .ck-button__label {
     font-size: 1.75em;
     font-weight: normal;
-    color: hsl(203, 100%, 50%);
+    color: hsl( 203, 100%, 50% );
 }
 
 .ck-editor .ck-heading-dropdown .ck-heading_heading2.ck-on .ck-button__label {
@@ -120,6 +120,6 @@
 
 .ck-editor .ck-content blockquote {
     font-family: Georgia, serif;
-    margin-left: calc(2 * var(--ck-spacing-large));
-    margin-right: calc(2 * var(--ck-spacing-large));
+    margin-left: calc( 2 * var(--ck-spacing-large) );
+    margin-right: calc( 2 * var(--ck-spacing-large) );
 }

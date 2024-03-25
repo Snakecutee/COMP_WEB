@@ -5,6 +5,7 @@ import {
   getSingleUser,
   tokenRequestInterceptor,
   updateUser,
+  uploadImage,
 } from "../../apiServices/index";
 import { toast } from "react-toastify";
 import Form from "../../components/form";
@@ -19,24 +20,21 @@ import ErrorMessageCustom from "../../components/errorMessage";
 import { PlusCircleIcon } from "@heroicons/react/solid";
 import { getNewToken } from "../../store/actions/authenticateAction";
 import { connect } from "react-redux";
+import { roles } from "../../constants/role";
 
 const editFormValidationSchema = yup.object({
   fullname: yup.string().required("Fullname must be filled"),
-  // password: yup
-  //   .string()
-  //   .required("No password provided.")
-  //   .min(8, "Password is too short - should be 8 chars minimum.")
-  //   .matches(/[a-zA-Z]/, "Password can only contain Latin letters."),
-  // confirmPassword: yup
-  //   .string()
-  //   .oneOf([yup.ref("password"), null], "Passwords must match"),
   age: yup
     .number()
     .required("Please supply your age")
     .min(1, "You must be at least 1 years")
     .max(100, "You must be at most 100 years"),
   address: yup.string().required("Address must be filled").max(500),
-  dateOfBirth: yup.date().required("Date of Birth is required").min(new Date(1950, 0, 1)).max(new Date(2004, 0, 1)),
+  dateOfBirth: yup
+    .date()
+    .required("Date of Birth is required")
+    .min(new Date(1950, 0, 1))
+    .max(new Date(2004, 0, 1)),
 });
 
 const initial = {
@@ -44,9 +42,12 @@ const initial = {
   gender: "Male",
   fullname: "",
   age: "",
+  role: "",
+  address: "",
+  avatar: "",
 };
-
-const EditUserPage = ({ close, userId, token, getNewTokenRequest }) => {
+const options = roles.ALL.map((role) => ({ name: role }));
+const EditUserPage = ({ close, userId, token, getNewTokenRequest, loadUser }) => {
   const [user, setUser] = useState(initial);
   const {
     register,
@@ -66,6 +67,9 @@ const EditUserPage = ({ close, userId, token, getNewTokenRequest }) => {
       password: "",
       confirmPassword: "",
       age: "",
+      role: "",
+      address: "",
+      avatar: "",
     },
   });
 
@@ -76,10 +80,27 @@ const EditUserPage = ({ close, userId, token, getNewTokenRequest }) => {
     register("password");
     register("confirmPassword");
     register("age");
+    register("role");
+    register("address");
+    register("avatar");
   }, [register]);
 
   const onEditChange = (e) => {
-    setValue((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    if(e.target.name === "avatarFile"){
+      const formData = new FormData();
+      formData.append("image", e.target.files[0]);
+      const upload = async () => {
+        const { status, data } = await uploadImage(formData);
+        if (status === 200) {
+          setValue("avatar", data.path);
+          console.log(data.path);
+          setUser((prev) => ({ ...prev, avatar: data.path }));
+        }
+      };
+      upload();
+    }else{
+      //setValue((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    }
   };
 
   const loadData = useCallback(async () => {
@@ -98,6 +119,8 @@ const EditUserPage = ({ close, userId, token, getNewTokenRequest }) => {
       setValue("gender", data.gender);
       setValue("age", data.age);
       setValue("address", data.address);
+      setValue("role", data.role || "");
+      setValue("avatar", data.avatar || "");
     }
   }, [token, getNewTokenRequest, userId, setValue]);
 
@@ -111,6 +134,7 @@ const EditUserPage = ({ close, userId, token, getNewTokenRequest }) => {
       toast.error(data.message);
     } else if (status === 200) {
       toast.success("Update User Successfully");
+      loadUser()
       reset({
         dateOfBirth: "",
         gender: "Male",
@@ -129,6 +153,16 @@ const EditUserPage = ({ close, userId, token, getNewTokenRequest }) => {
     <>
       <div className="w-screen sm:max-w-xl">
         <Form title="Edit Account">
+          <label htmlFor="avatarFile" className="w-32 h-auto text-center bg-green-300 rounded-md">
+            {user.avatar ? <img src={process.env.REACT_APP_BASE_STATIC_FILE + user.avatar} /> : "Upload Avatar"}
+          </label>
+          <InputField
+            id="avatarFile"
+            type="file"
+            name="avatarFile"
+            onChange={onEditChange}
+            style={{ display: "none" }}
+          />
           <InputField
             type="text"
             placeholder="Fullname"
@@ -170,8 +204,8 @@ const EditUserPage = ({ close, userId, token, getNewTokenRequest }) => {
             name="dateOfBirth"
             onChange={onEditChange}
             {...register("dateOfBirth")}
-            max={'2004-01-01'}
-            min={'1950-01-01'}
+            max={"2004-01-01"}
+            min={"1950-01-01"}
           />
           <ErrorMessage
             name="dateOfBirth"
@@ -187,6 +221,18 @@ const EditUserPage = ({ close, userId, token, getNewTokenRequest }) => {
               { name: "Male" },
               { name: "Female" },
               { name: "Unknown" },
+            ]}
+          />
+          <SelectOption
+            {...register("role")}
+            defaultValue={getValues("role")}
+            name="role"
+            onChange={onEditChange}
+            listData={[
+              { name: roles.QA_COORDINATOR },
+              { name: roles.QA_MANAGER },
+              { name: roles.STAFF },
+              { name: roles.ADMIN },
             ]}
           />
 

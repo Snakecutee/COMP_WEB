@@ -5,6 +5,7 @@ import {
   register as registerApi,
   getAllDepartment,
   tokenRequestInterceptor,
+  uploadImage,
 } from "../../apiServices/index";
 import { toast } from "react-toastify";
 import Form from "../../components/form";
@@ -18,6 +19,8 @@ import { ErrorMessage } from "@hookform/error-message";
 import ErrorMessageCustom from "../../components/errorMessage";
 import {PlusCircleIcon} from '@heroicons/react/solid'
 
+
+
 const registerFormValidationSchema = yup.object({
   fullname: yup.string().required("Fullname must be filled"),
   username: yup
@@ -25,20 +28,7 @@ const registerFormValidationSchema = yup.object({
     .email("Username be a valid email")
     .max(255)
     .required("Username is required"),
-  // password: yup
-  //   .string()
-  //   .required("No password provided.")
-  //   .min(8, "Password is too short - should be 8 chars minimum.")
-  //   .matches(/[a-zA-Z]/, "Password can only contain Latin letters."),
-  // confirmPassword: yup
-  //   .string()
-  //   .oneOf([yup.ref("password"), null], "Passwords must match"),
-  // age: yup
-  //   .number()
-  //   .required("Please supply your age")
-  //   .min(1, "You must be at least 1 years")
-  //   .max(100, "You must be at most 100 years"),
-  // address: yup.string().required("Address must be filled").max(500),
+  
   dateOfBirth: yup
     .date()
     .required("Date of Birth is required")
@@ -47,7 +37,7 @@ const registerFormValidationSchema = yup.object({
 });
 
 
-const RegisterPage = ({ close, loadUser, token, getNewTokenRequest }) => {
+const RegisterPage = ({ close, loadUser, token, getNewTokenRequest, roles }) => {
   const {
     register,
     handleSubmit,
@@ -63,32 +53,33 @@ const RegisterPage = ({ close, loadUser, token, getNewTokenRequest }) => {
       dateOfBirth: "",
       gender: "Male",
       fullname: "",
-      department: "",
+      role: "",
+      password: "",
+      confirmPassword: "",
+      avatar: "",
     },
   });
 
-  const [departments, setDepartments] = useState([]);
+  const [avatar, setAvatar] = useState("");
 
-  const loadDepartment = useCallback(async () => {
-    const loadAllDataOfDepartment = async () => {
-      const { data, status } = await getAllDepartment(token);
-      return { data, status };
+  const options = roles.ALL.map(role => ({ name: role, value: role }));
+
+  const onEditChange = (e) => {
+    const formData = new FormData();
+    formData.append("image", e.target.files[0]);
+    const upload = async () => {
+      const { status, data } = await uploadImage(formData);
+      if (status === 200) {
+        setValue("avatar", data.path);
+       setAvatar(data.path);
+      }
     };
-    const { status, data } = await tokenRequestInterceptor(
-      loadAllDataOfDepartment,
-      getNewTokenRequest
-    );
-    if (status === 200) {
-      setDepartments((prev) => data);
-      setValue("department", data[0].name);
-    }
-  }, [token, setValue, getNewTokenRequest]);
-
-
+    upload();
+  }
 
   useEffect(() => {
-    loadDepartment();
-  }, [loadDepartment]);
+    console.log(options);
+  },[]);
 
   const onSubmit = async (formData) => {
     const { status, data } = await registerApi(formData);
@@ -104,6 +95,8 @@ const RegisterPage = ({ close, loadUser, token, getNewTokenRequest }) => {
         age: "",
         dateOfBirth: "",
         gender: "",
+        role: "",
+        avatar: "",
       });
       loadUser();
       close();
@@ -116,6 +109,16 @@ const RegisterPage = ({ close, loadUser, token, getNewTokenRequest }) => {
     <>
       <div className="w-screen sm:max-w-xl">
         <Form title="Create Account">
+        <label htmlFor="avatarFile" className="w-32 h-auto text-center bg-green-300 rounded-md">
+            {avatar ? <img src={process.env.REACT_APP_BASE_STATIC_FILE + avatar} /> : "Upload Avatar"}
+          </label>
+          <InputField
+            id="avatarFile"
+            type="file"
+            name="avatarFile"
+            onChange={onEditChange}
+            style={{ display: "none" }}
+          />
           <InputField
             type="text"
             placeholder="Fullname"
@@ -126,7 +129,6 @@ const RegisterPage = ({ close, loadUser, token, getNewTokenRequest }) => {
             errors={errors}
             render={({ message }) => <ErrorMessageCustom message={message} />}
           />
-
           <InputField
             type="text"
             placeholder="Username"
@@ -134,6 +136,17 @@ const RegisterPage = ({ close, loadUser, token, getNewTokenRequest }) => {
           />
           <ErrorMessage
             name="username"
+            errors={errors}
+            render={({ message }) => <ErrorMessageCustom message={message} />}
+          />
+
+          <InputField
+            type="text"
+            placeholder="Password"
+            {...register("password")}
+          />
+          <ErrorMessage
+            name="password"
             errors={errors}
             render={({ message }) => <ErrorMessageCustom message={message} />}
           />
@@ -158,9 +171,9 @@ const RegisterPage = ({ close, loadUser, token, getNewTokenRequest }) => {
             ]}
           />
           <SelectOption
-            {...register("department")}
-            defaultValue={getValues("department")}
-            listData={departments.filter((item) => !item.deleted)}
+            {...register("role")}
+            defaultValue={getValues("role")}
+            listData={options}
           />
           <Button
             onClick={handleSubmit(onSubmit)}

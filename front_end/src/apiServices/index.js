@@ -79,7 +79,7 @@ export const searchUserByUsername = (username, token) =>
     headers: { Authorization: `Bearer ${token}` },
   });
 
-export const assignSTUDENT = (formData, id, token) =>
+export const assignStaff = (formData, id, token) =>
   apiInstance.put(
     `users/${id}`,
     { ...formData },
@@ -88,7 +88,7 @@ export const assignSTUDENT = (formData, id, token) =>
     }
   );
 
-export const assignSTUDENTToManager = (formData, id, token) =>
+export const assignStaffToManager = (formData, id, token) =>
   apiInstance.put(
     `users/assign/${id}`,
     { ...formData },
