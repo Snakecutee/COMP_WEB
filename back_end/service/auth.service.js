@@ -71,7 +71,7 @@ const register = async (registerAccount, origin) => {
           ...registerAccount,
           email: username,
           password: password,
-          role: role || process.env.STAFF,
+          role: role || process.env.STUDENT,
         });
         await createAccount.save();
         return createAccount;

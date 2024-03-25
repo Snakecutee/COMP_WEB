@@ -13,7 +13,7 @@ const getAllUser = async () => {
   const qaCoordiator = await User.find({ role: process.env.MARKETINGCOORDINATOR })
     .sort([["createdAt", "asc"]])
 
-  const userDb = await User.find({ role: process.env.STAFF })
+  const userDb = await User.find({ role: process.env.STUDENT })
     .sort([["createdAt", "asc"]])
 
   return [...MARKETINGMANAGER, ...qaCoordiator, ...userDb];
@@ -24,7 +24,7 @@ const getUserByUsername = async (username) => {
      role: process.env.MARKETINGMANAGER,
      fullname: new RegExp(username, "i"),
    });
-  const listUserInDb = await User.find({role: process.env.STAFF, fullname: new RegExp(username, 'i')})
+  const listUserInDb = await User.find({role: process.env.STUDENT, fullname: new RegExp(username, 'i')})
     .sort([["createdAt", "asc"]])
     if(MARKETINGMANAGER) {
       return [MARKETINGMANAGER, ...listUserInDb]
