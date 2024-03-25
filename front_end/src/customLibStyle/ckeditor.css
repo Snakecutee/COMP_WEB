@@ -1,0 +1,125 @@
+.ck-editor {
+    border: 1px solid var(--ck-color-base-border) !important;
+    border-radius: var(--ck-border-radius) !important;
+    width: 100% !important;
+    max-height: 700px !important;
+    height: 100%;
+    display: flex;
+    flex-flow: column nowrap;
+}
+
+.ck.ck-toolbar {
+    z-index: 1;
+    border: 0;
+    border-radius: 0;
+    box-shadow: 0 0 5px hsla(0, 0%, 0%, .2);
+    width: 100%;
+    border-bottom: 1px solid var(--ck-color-toolbar-border);
+    position: sticky !important;
+}
+
+.ck-editor__top .ck-sticky-panel {
+    border: 0;
+    border-radius: 0;
+}
+
+.ck-editor__main {
+    overflow: auto;
+}
+
+.ck-editor_content {
+    padding: calc(2 * var(--ck-spacing-large));
+    background: var(--ck-color-base-foreground);
+
+    overflow-y: scroll;
+}
+
+.ck-editor__editable {
+    width: 15.8cm;
+    min-height: 21cm;
+
+    padding: 1cm 2cm 2cm;
+
+    border: 1px hsl(0, 0%, 82.7%) solid;
+    border-radius: var(--ck-border-radius);
+    background: white;
+
+    box-shadow: 0 0 5px hsla(0, 0%, 0%, .1);
+
+    margin: 0 auto;
+}
+
+.ck-editor .ck-content,
+.ck-editor .ck-heading-dropdown .ck-list .ck-button__label {
+    font: 16px/1.6 "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.ck-editor .ck-heading-dropdown .ck-list .ck-button__label {
+    line-height: calc(1.7 * var(--ck-line-height-base) * var(--ck-font-size-base));
+    min-width: 6em;
+}
+
+.ck-editor .ck-heading-dropdown .ck-list .ck-button:not(.ck-heading_paragraph) .ck-button__label {
+    transform: scale(0.8);
+    transform-origin: left;
+}
+
+.ck-editor .ck-content h2,
+.ck-editor .ck-heading-dropdown .ck-heading_heading1 .ck-button__label {
+    font-size: 2.18em;
+    font-weight: normal;
+}
+
+.ck-editor .ck-content h1 {
+    font-size: 4em;
+    padding-top: .1em;
+    margin-bottom: .05em;
+}
+
+.ck-editor .ck-content h2 {
+    line-height: 1.37em;
+    padding-top: .342em;
+    margin-bottom: .142em;
+}
+
+.ck-editor .ck-content h3,
+.ck-editor .ck-heading-dropdown .ck-heading_heading2 .ck-button__label {
+    font-size: 1.75em;
+    font-weight: normal;
+    color: hsl(203, 100%, 50%);
+}
+
+.ck-editor .ck-heading-dropdown .ck-heading_heading2.ck-on .ck-button__label {
+    color: var(--ck-color-list-button-on-text);
+}
+
+.ck-editor .ck-content h3 {
+    line-height: 1.86em;
+    padding-top: .171em;
+    margin-bottom: .357em;
+}
+
+.ck-editor .ck-content h4,
+.ck-editor .ck-heading-dropdown .ck-heading_heading3 .ck-button__label {
+    font-size: 1.31em;
+    font-weight: bold;
+}
+
+.ck-editor .ck-content h4 {
+    line-height: 1.24em;
+    padding-top: .286em;
+    margin-bottom: .952em;
+}
+
+.ck-editor .ck-content p {
+    font-size: 1em;
+    line-height: 1.63em;
+    padding-top: .5em;
+    margin-bottom: 1.13em;
+}
+
+.ck-editor .ck-content blockquote {
+    font-family: Georgia, serif;
+    margin-left: calc(2 * var(--ck-spacing-large));
+    margin-right: calc(2 * var(--ck-spacing-large));
+}
