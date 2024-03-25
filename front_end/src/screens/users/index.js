@@ -11,7 +11,7 @@ import {
   confirmUserExcel,
   cancelUserExcel,
   getUserWithoutDepartment,
-  assignStaffToManager,
+  assignSTUDENTToManager,
   deleteUser,
   reactiveUser,
 } from "../../apiServices";

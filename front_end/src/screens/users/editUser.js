@@ -231,7 +231,7 @@ const EditUserPage = ({ close, userId, token, getNewTokenRequest, loadUser }) =>
             listData={[
               { name: roles.QA_COORDINATOR },
               { name: roles.QA_MANAGER },
-              { name: roles.STAFF },
+              { name: roles.STUDENT },
               { name: roles.ADMIN },
             ]}
           />
