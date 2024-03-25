@@ -17,19 +17,21 @@ db.seedData = async () => {
         fullname: "Administrator",
         dateOfBirth: new Date(),
         email: "admin123@gmail.com",
+        address:"122 ham nghi",
         age: 21,
         gender: "Male",
         role: process.env.ADMIN,
       });
       await admin.save();
       const userTest1 = await new User({
-        avatar: "statics/images/avatar.png",
+        avatar: "statics/images/admin.png",
         username: "marketingmanager@gmail.com",
         password: "123456",
         fullname: "marketing Manager",
         email: "markertingmanager@gmail.com",
         dateOfBirth: new Date(),
         age: 21,
+        address:"122 ham nghi",
         gender: "Male",
         role: process.env.MARKETINGMANAGER,
       });
@@ -43,7 +45,7 @@ db.seedData = async () => {
         dateOfBirth: new Date(),
         age: 21,
         gender: "Male",
-        department: "IT Major",
+        address:"122 ham nghi",
         role: process.env.MARKETINGCOORDINATOR,
       });
       await userTest2.save();
@@ -56,7 +58,7 @@ db.seedData = async () => {
         dateOfBirth: new Date(),
         age: 21,
         gender: "Male",
-        department: "IT Major",
+        address:"122 ham nghi",
         role: process.env.STUDENT,
       });
       await userTest3.save();

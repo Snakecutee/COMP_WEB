@@ -34,6 +34,7 @@ const registerFormValidationSchema = yup.object({
     .required("Date of Birth is required")
     .min(new Date(1950, 0, 1), "Your Birthday cannot before 1/1/1950")
     .max(new Date(2004, 0, 1), "Your Birthday cannot after 1/1/2004"),
+    address: yup.string().required("Address must be filled"),
 });
 
 
@@ -53,6 +54,7 @@ const RegisterPage = ({ close, loadUser, token, getNewTokenRequest, roles }) => 
       dateOfBirth: "",
       gender: "Male",
       fullname: "",
+      address:"",
       role: "",
       password: "",
       confirmPassword: "",

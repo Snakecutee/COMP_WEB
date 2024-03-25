@@ -18,6 +18,7 @@ const DetailPage = ({user}) =>{
                 <p className="font-medium">Email: <span className="font-light">{user?.email}</span></p>
                 <p className="font-medium">Age: <span className="font-light">{user?.age}</span></p>
                 <p className="font-medium">Date Of Birth: <span className="font-light">{dateOfBirthFormated}</span></p>
+                <p className="font-medium">Address: <span className="font-light">{user?.address}</span></p>
                 <p className="font-medium">Gender: <span className="font-light">{user?.gender}</span></p>
                 <p className="font-medium">Role: <span className="font-light">{user?.role}</span></p>
             </div>  
