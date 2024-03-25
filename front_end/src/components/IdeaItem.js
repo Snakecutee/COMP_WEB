@@ -34,7 +34,7 @@ const IdeaItem = ({
     <li key={index} className="mb-5 w-full">
       <div
         onClick={
-          role === roles.STAFF || role === roles.QA_COORDINATOR
+          role === roles.STUDENT || role === roles.QA_COORDINATOR
             ? handleNavigate
             : null
         }

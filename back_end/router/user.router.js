@@ -37,7 +37,7 @@ userRouter.get(
     authorize([
       process.env.MARKETINGMANAGER,
       process.env.ADMIN,
-      process.env.STAFF,
+      process.env.STUDENT,
       process.env.MARKETINGCOORDINATOR,
     ]),
   ],

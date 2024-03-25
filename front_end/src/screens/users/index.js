@@ -11,7 +11,7 @@ import {
   confirmUserExcel,
   cancelUserExcel,
   getUserWithoutDepartment,
-  assignStaffToManager,
+  assignSTUDENTToManager,
   deleteUser,
   reactiveUser
 } from "../../apiServices";
@@ -241,10 +241,10 @@ const UserPage = ({ getNewTokenRequest, token }) => {
     setOpenAssign(true);
   };
 
-  const assignStaff = async (id) => {
+  const assignSTUDENT = async (id) => {
     // e.preventDefault();
-    const assignStaffRequest = async () => {
-      const { data, status } = await assignStaffToManager(
+    const assignSTUDENTRequest = async () => {
+      const { data, status } = await assignSTUDENTToManager(
         { role: roles.QA_MANAGER, department: userAssign.department },
         id,
         token
@@ -254,7 +254,7 @@ const UserPage = ({ getNewTokenRequest, token }) => {
     };
 
     const { status, data } = await tokenRequestInterceptor(
-      assignStaffRequest,
+      assignSTUDENTRequest,
       getNewTokenRequest
     );
     if (status === 200) {

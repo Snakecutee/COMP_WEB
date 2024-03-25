@@ -9,7 +9,7 @@ const PrivateRoute = ({ isAuthenticated, children, allowRoles = roles.ALL, user 
     const location = useLocation();
     return isAuthenticated ? (
         allowRoles?.includes(user?.role) ? (
-            user.role !== roles.STAFF ? (
+            user.role !== roles.STUDENT ? (
                 <DashBoardLayout>{children}</DashBoardLayout>
             ) : (
                 <ApplicationBaseLayout>{children}</ApplicationBaseLayout>

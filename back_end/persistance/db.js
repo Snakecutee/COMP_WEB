@@ -49,15 +49,15 @@ db.seedData = async () => {
       await userTest2.save();
       const userTest3 = await new User({
         avatar: "statics/images/avatar.png",
-        username: "staff",
+        username: "STUDENT",
         password: "123456",
-        fullname: "staff",
-        email: "staff@gmail.com",
+        fullname: "STUDENT",
+        email: "STUDENT@gmail.com",
         dateOfBirth: new Date(),
         age: 21,
         gender: "Male",
         department: "IT Major",
-        role: process.env.STAFF,
+        role: process.env.STUDENT,
       });
       await userTest3.save();
       console.log("Account seeded");

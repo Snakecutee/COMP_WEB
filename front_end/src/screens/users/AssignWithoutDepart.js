@@ -22,7 +22,7 @@ function AssignWithoutDepart({ setOpen, role, users, handleSubmit }) {
                 }}
             >
                 {users.length &&
-                    users.filter(user => user.role === 'Staff').map((item, index) => (
+                    users.filter(user => user.role === 'STUDENT').map((item, index) => (
                         <option value={item.id} key={index}>
                             {item.fullname}
                         </option>
