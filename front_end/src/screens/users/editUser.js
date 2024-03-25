@@ -86,7 +86,7 @@ const EditUserPage = ({ close, userId, token, getNewTokenRequest, loadUser }) =>
   }, [register]);
 
   const onEditChange = (e) => {
-    if(e.target.name === "avatarFile"){
+    if (e.target.name === "avatarFile") {
       const formData = new FormData();
       formData.append("image", e.target.files[0]);
       const upload = async () => {
@@ -98,7 +98,7 @@ const EditUserPage = ({ close, userId, token, getNewTokenRequest, loadUser }) =>
         }
       };
       upload();
-    }else{
+    } else {
       //setValue((prev) => ({ ...prev, [e.target.name]: e.target.value }));
     }
   };
@@ -229,8 +229,8 @@ const EditUserPage = ({ close, userId, token, getNewTokenRequest, loadUser }) =>
             name="role"
             onChange={onEditChange}
             listData={[
-              { name: roles.QA_COORDINATOR },
-              { name: roles.QA_MANAGER },
+              { name: roles.MARKETING_COORDINATOR },
+              { name: roles.MARKETING_MANAGER },
               { name: roles.STUDENT },
               { name: roles.ADMIN },
             ]}

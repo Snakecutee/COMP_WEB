@@ -22,7 +22,7 @@ const IdeaItem = ({
   function numberWithCommas(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
-  
+
   const navigate = useNavigate();
 
   const handleNavigate = (e) => {
@@ -34,7 +34,7 @@ const IdeaItem = ({
     <li key={index} className="mb-5 w-full">
       <div
         onClick={
-          role === roles.STUDENT || role === roles.QA_COORDINATOR
+          role === roles.STUDENT || role === roles.MARKETING_COORDINATOR
             ? handleNavigate
             : null
         }

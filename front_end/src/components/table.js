@@ -158,10 +158,9 @@ const Table = ({
                       key={index}
                       aria-current="page"
                       onClick={() => selectPage(index)}
-                      className={`z-10 bg-indigo-50 ${
-                        currPage === index &&
+                      className={`z-10 bg-indigo-50 ${currPage === index &&
                         "border-indigo-500 text-indigo-600"
-                      } inline-flex items-center px-4 py-2 border-2 text-sm font-medium`}
+                        } inline-flex items-center px-4 py-2 border-2 text-sm font-medium`}
                     >
                       {item + 1}
                     </button>

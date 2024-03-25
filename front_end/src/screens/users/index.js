@@ -7,13 +7,9 @@ import {
   getAllUser,
   searchUserByUsername,
   getSingleUser,
-  uploadExcelCreateUser,
-  confirmUserExcel,
-  cancelUserExcel,
-  getUserWithoutDepartment,
-  assignSTUDENTToManager,
+
   deleteUser,
-  reactiveUser,
+
 } from "../../apiServices";
 import { getNewToken } from "../../store/actions/authenticateAction";
 import Modal from "../../components/modal";
@@ -24,8 +20,7 @@ import { toast } from "react-toastify";
 import {
   IdentificationIcon,
   BackspaceIcon,
-  UploadIcon,
-  RefreshIcon,
+
   PencilAltIcon,
 } from "@heroicons/react/solid";
 import { roles } from "../../constants/role";
@@ -133,15 +128,14 @@ const UserPage = ({ getNewTokenRequest, token }) => {
     e.preventDefault();
     setUser((prev) => users.find((user) => user.id === id));
     setOpenEdit((prev) => !prev);
-    
+
   };
 
   const renderTableHead = (item, index) => (
     <th key={index} className="p-2 whitespace-nowrap">
       <div
-        className={`font-semibold ${
-          item.toLowerCase() === "actions" ? "text-center" : "text-left"
-        }`}
+        className={`font-semibold ${item.toLowerCase() === "actions" ? "text-center" : "text-left"
+          }`}
       >
         {item}
       </div>
@@ -193,7 +187,7 @@ const UserPage = ({ getNewTokenRequest, token }) => {
             onClick={(e) => deleteHandler(e, item.id)}
             icon={BackspaceIcon}
             type="danger"
-            title="Deactive"
+            title="Delete"
           />
         </div>
       </td>

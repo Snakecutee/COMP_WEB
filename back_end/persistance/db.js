@@ -35,7 +35,7 @@ db.seedData = async () => {
       });
       await userTest1.save();
       const userTest2 = await new User({
-        avatar: "statics/images/avatar.png",
+        avatar: "statics/images/admin.png",
         username: "marketingcoordinator",
         password: "123456",
         fullname: "marketing Coordinator",

@@ -17,7 +17,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import DateTimePicker from "../../components/DateTimePicker";
 import { ErrorMessage } from "@hookform/error-message";
 import ErrorMessageCustom from "../../components/errorMessage";
-import {PlusCircleIcon} from '@heroicons/react/solid'
+import { PlusCircleIcon } from '@heroicons/react/solid'
 
 
 
@@ -28,7 +28,7 @@ const registerFormValidationSchema = yup.object({
     .email("Username be a valid email")
     .max(255)
     .required("Username is required"),
-  
+
   dateOfBirth: yup
     .date()
     .required("Date of Birth is required")
@@ -71,7 +71,7 @@ const RegisterPage = ({ close, loadUser, token, getNewTokenRequest, roles }) => 
       const { status, data } = await uploadImage(formData);
       if (status === 200) {
         setValue("avatar", data.path);
-       setAvatar(data.path);
+        setAvatar(data.path);
       }
     };
     upload();
@@ -79,7 +79,7 @@ const RegisterPage = ({ close, loadUser, token, getNewTokenRequest, roles }) => 
 
   useEffect(() => {
     console.log(options);
-  },[]);
+  }, []);
 
   const onSubmit = async (formData) => {
     const { status, data } = await registerApi(formData);
@@ -109,7 +109,7 @@ const RegisterPage = ({ close, loadUser, token, getNewTokenRequest, roles }) => 
     <>
       <div className="w-screen sm:max-w-xl">
         <Form title="Create Account">
-        <label htmlFor="avatarFile" className="w-32 h-auto text-center bg-green-300 rounded-md">
+          <label htmlFor="avatarFile" className="w-32 h-auto text-center bg-green-300 rounded-md">
             {avatar ? <img src={process.env.REACT_APP_BASE_STATIC_FILE + avatar} /> : "Upload Avatar"}
           </label>
           <InputField
@@ -161,6 +161,16 @@ const RegisterPage = ({ close, loadUser, token, getNewTokenRequest, roles }) => 
             errors={errors}
             render={({ message }) => <ErrorMessageCustom message={message} />}
           />
+          <InputField
+            type="text"
+            placeholder="Address"
+            {...register("address")}
+          />
+          <ErrorMessage
+            name="address"
+            errors={errors}
+            render={({ message }) => <ErrorMessageCustom message={message} />}
+          />
           <SelectOption
             {...register("gender")}
             defaultValue={getValues("gender")}
@@ -174,7 +184,14 @@ const RegisterPage = ({ close, loadUser, token, getNewTokenRequest, roles }) => 
             {...register("role")}
             defaultValue={getValues("role")}
             listData={options}
-          />
+            id="role"
+          >
+            <option disabled value="">
+              Role
+            </option>
+          </SelectOption>
+           
+        
           <Button
             onClick={handleSubmit(onSubmit)}
             role="submit"
