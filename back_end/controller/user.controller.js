@@ -9,24 +9,9 @@ const {
   
   const userController = {
     getAllUser: async (req, res) => {
-      const { username, department } = req.query;
-      if(username && department) {
-        const result = await getUserByDepartment(department, username);
-        res.status(200).json(result);
-        return;
-      }
-      if (username) {
-        const result = await getUserByUsername(username);
-        res.status(200).json(result);
-        return;
-      } else if (department) {
-        const result = await getUserByDepartment(department);
-        res.status(200).json(result);
-        return;
-      } else {
-        const user = await getAllUser();
+      const user = await getAllUser();
+      console.log(user);
         res.status(200).json(user);
-      }
     },
     getUserById: async (req, res) => {
       const id = req.params.id;

@@ -25,7 +25,7 @@ userRouter.get(
   "/",
   [
     passport.authenticate("jwt", { session: false }),
-    authorize([process.env.QAMANAGER, process.env.ADMIN]),
+    authorize([process.env.MARKETINGMANAGER, process.env.ADMIN]),
   ],
   userController.getAllUser
 );
@@ -35,10 +35,10 @@ userRouter.get(
   [
     passport.authenticate("jwt", { session: false }),
     authorize([
-      process.env.QAMANAGER,
+      process.env.MARKETINGMANAGER,
       process.env.ADMIN,
       process.env.STAFF,
-      process.env.QACOORDINATOR,
+      process.env.MARKETINGCOORDINATOR,
     ]),
   ],
   userController.getUserById

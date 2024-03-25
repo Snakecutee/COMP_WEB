@@ -9,6 +9,7 @@ const expressSession = require("express-session");
 const cookieParser = require("cookie-parser");
 
 const passportConfig = require("./middleware/authentication");
+
 const rootRouter = require("./router/index");
 const db = require("./persistance/db");
 const app = express();

@@ -60,7 +60,7 @@ const refreshJwtToken = async (token) => {
 };
 
 const register = async (registerAccount, origin) => {
-    const { username, password, confirmPassword } = registerAccount;
+    const { username, password, role } = registerAccount;
     const checkAccountExistedInDb = await User.findOne({ username });
     if (checkAccountExistedInDb) {
       throw new Error("Account already exists");
@@ -70,7 +70,8 @@ const register = async (registerAccount, origin) => {
         const createAccount = new User({
           ...registerAccount,
           email: username,
-          role: process.env.STAFF,
+          password: password,
+          role: role || process.env.STAFF,
         });
         await createAccount.save();
         return createAccount;

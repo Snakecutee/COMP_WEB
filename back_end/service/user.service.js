@@ -4,23 +4,30 @@ const { register } = require("./auth.service");
 const CryptoJS = require("crypto-js");
 
 const getAllUser = async () => {
-  const qaManager = await User.findOne({ role: process.env.QAMANAGER })
+
+  //const admin = await User.find({ role: process.env.ADMIN });
+
+  const MARKETINGMANAGER = await User.find({ role: process.env.MARKETINGMANAGER })
     .sort([["createdAt", "asc"]])
+    
+  const qaCoordiator = await User.find({ role: process.env.MARKETINGCOORDINATOR })
+    .sort([["createdAt", "asc"]])
+
   const userDb = await User.find({ role: process.env.STAFF })
     .sort([["createdAt", "asc"]])
 
-  return [qaManager, ...userDb];
+  return [...MARKETINGMANAGER, ...qaCoordiator, ...userDb];
 };
 
-const getUserByUsername = async (username) => {
-   const qaManager = await User.findOne({
-     role: process.env.QAMANAGER,
+const getUserByUsername = async (username) => { 
+   const MARKETINGMANAGER = await User.findOne({
+     role: process.env.MARKETINGMANAGER,
      fullname: new RegExp(username, "i"),
    });
   const listUserInDb = await User.find({role: process.env.STAFF, fullname: new RegExp(username, 'i')})
     .sort([["createdAt", "asc"]])
-    if(qaManager) {
-      return [qaManager, ...listUserInDb]
+    if(MARKETINGMANAGER) {
+      return [MARKETINGMANAGER, ...listUserInDb]
     }
     return listUserInDb;
 };
@@ -39,6 +46,8 @@ const updateUser = async (id, updateAccount) => {
     address,
     age,
     gender,
+    role,
+    avatar,
   } = updateAccount;
   if (password !== confirmPassword) {
     throw new Error("Password and confirm password is not match");
@@ -56,6 +65,8 @@ const updateUser = async (id, updateAccount) => {
         address: address,
         age: age,
         gender: gender,
+        avatar: avatar,
+        role: role,
       });
     } catch (error) {
       if (error.name === "ValidationError") {
@@ -73,7 +84,8 @@ const updateUser = async (id, updateAccount) => {
 };
 
 const deleteUser = async (id) => {
-  await User.findByIdAndUpdate(id, { deleted: true });
+  console.log("delete" + id);
+  await User.deleteOne({ _id: id });
 };
 
 const reactiveUser = async (id) => {

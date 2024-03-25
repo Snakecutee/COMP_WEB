@@ -1,0 +1,1 @@
+!function(t){const i=t.gu=t.gu||{};i.dictionary=Object.assign(i.dictionary||{},{"Block quote":" વિચાર ટાંકો",Bold:"ઘાટુ - બોલ્ડ્",Italic:"ત્રાંસુ - ઇટલિક્",Strikethrough:"",Subscript:""}),i.getPluralForm=function(t){return 1!=t}}(window.CKEDITOR_TRANSLATIONS||(window.CKEDITOR_TRANSLATIONS={}));
