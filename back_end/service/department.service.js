@@ -24,10 +24,50 @@ const getAllDepartments = async () =>{
     return [...departmentDB];
 }
 
+const searchDepartment = async (name) => {
+    return await Department.find({name: new RegExp(name, 'i')}).sort([["createdAt", "asc"]]);
+}
+
+const findIdDepartment = async (id) =>{
+    const departmentDb = await Department.findById(id);
+    if(!departmentDb){
+        throw new Error("Department does not exist");
+    }
+    return departmentDb;
+}
+
+const deleteDepartment = async (id) =>{
+    const getDepartment = await findIdDepartment(id);
+    const checkDepartmentUsed = await UserModel.find({department:getDepartment.name})
+    const checkDepartmentAtIdea = await IdeaModel.find({department:getDepartment.name})
+
+    await Department.findByIdAndUpdate(id , {deleted: true});
+    if (checkDepartmentUsed){
+        await UserModel.updateMany({department: getDepartment.name},{ department: "" })
+    }
+
+    if (checkDepartmentAtIdea){
+        await IdeaModel.updateMany({department: getDepartment.name},{ department: "" })
+    }
+    canDelete = true;
+    return canDelete;
+}
+
+const reactiveDepartment = async (id) => {
+    await Department.findByIdAndUpdate(id, {deleted: false})
+}
+
+const updateDepartment = async(id, description) =>{
+    await Department.findByIdAndUpdate(id , {description: description});
+}
 
 module.exports = {
     createDepartment,
     getAllDepartments,
- 
+    findIdDepartment,
+    deleteDepartment,
+    updateDepartment,
+    searchDepartment,
+    reactiveDepartment,
 };
 
