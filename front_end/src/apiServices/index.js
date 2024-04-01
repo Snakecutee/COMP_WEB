@@ -123,12 +123,50 @@ export const cancelUserExcel = (filename, token) =>
     headers: { Authorization: `Bearer ${token}` },
   });
 
+
+
+  
+//Department
+export const createDepartment = (formData, token) =>
+apiInstance.post(
+  "/departments/",
+  { ...formData },
+  { headers: { Authorization: `Bearer ${token}` } }
+);
+
+export const searchDepartByName = (name, token) =>
+apiInstance.get(`departments?name=${name}`, {
+  headers: { Authorization: `Bearer ${token}` },
+});
+
 export const getAllDepartment = (token) =>
-  apiInstance.get("/departments/", {
-    headers: { Authorization: `Bearer ${token}` },
-  });
+apiInstance.get("/departments/", {
+  headers: { Authorization: `Bearer ${token}` },
+});
+
+export const findDepartmentByID = (token, id) =>
+apiInstance.get(`/departments/${id}`, {
+  headers: { Authorization: `Bearer ${token}` },
+});
+
+export const updateDepartment = (formData, id, token) =>
+apiInstance.put(
+  `/departments/${id}`,
+  { ...formData },
+  { headers: { Authorization: `Bearer ${token}` } }
+);
+
+export const deleteDepartment = (token, id) =>
+apiInstance.delete(`/departments/${id}`, {
+  headers: { Authorization: `Bearer ${token}` },
+});
+export const reactiveDepartment = (token, id) =>
+apiInstance.get(`/departments/reactive/${id}`, {
+  headers: { Authorization: `Bearer ${token}` },
+});
+
+export const getAllSubRoute = () => {};
 
 
 
-export const getAllSubRoute = () => apiInstance.get("/sub-route");
 
