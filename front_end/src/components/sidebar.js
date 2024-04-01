@@ -7,7 +7,7 @@ import {
   LogoutIcon,
   CalendarIcon,
   DuplicateIcon,
-  DocumentIcon
+  DocumentIcon,
 } from "@heroicons/react/solid";
 import { connect } from "react-redux";
 import { logout } from "../store/actions/authenticateAction";
@@ -16,8 +16,8 @@ import { useEffect, useState } from "react";
 import { ChevronDownIcon } from "@heroicons/react/solid";
 import Modal from "./modal";
 import Profile from "../screens/users/profile";
-import { roles } from '../constants/role'
-import avatar from '../assets/admin.png'
+import { roles } from "../constants/role";
+import avatar from "../assets/admin.png";
 
 const SideBar = ({
   authenticateReducer,
@@ -75,29 +75,106 @@ const SideBar = ({
               className="w-full h-fit flex sm:flex-row flex-col items-center justify-center cursor-pointer"
               onClick={(e) => editUserHandler(e, authenticateReducer?.user?.id)}
             >
-              <div className="shrink-0">
-
-              </div>
+              <div className="shrink-0"></div>
               <div className="grow ml-3">
                 <p className="hidden sm:inline-block text-sm font-semibold text-blue-600">
                   {authenticateReducer?.user?.fullname}
                 </p>
               </div>
             </li>
+            {user?.role === roles.STUDENT && (
+              <>
+                <li className="w-full">
+                  <Link
+                    to="/idea"
+                    className={`flex items-center p-2 text-base justify-between font-normal ${
+                      location.pathname === "/idea"
+                        ? "bg-gray-700 dark:bg-gray-900"
+                        : "bg-inherit"
+                    } rounded-lg text-white hover:bg-gray-100 dark:hover:bg-gray-700`}
+                  >
+                    <div className="flex items-center">
+                      <UserIcon className="text-gray-500 w-5 h-5" />
+                      <span className="hidden md:inline-block ml-3">
+                        Manager Idea
+                      </span>
+                    </div>
+                  </Link>
+                </li>
+              </>
+            )}
+            {user?.role !== roles.ADMIN && (
+              <>
+                <li className="w-full">
+                  <Link
+                    to="/magazines"
+                    className={`flex items-center p-2 text-base justify-between font-normal ${
+                      location.pathname === "/magazines"
+                        ? "bg-gray-700 dark:bg-gray-900"
+                        : "bg-inherit"
+                    } rounded-lg text-white hover:bg-gray-100 dark:hover:bg-gray-700`}
+                  >
+                    <div className="flex items-center">
+                      <DocumentDuplicateIcon className="text-gray-500 w-5 h-5" />
+                      <span className="hidden md:inline-block ml-3">
+                        Manager Magazine
+                      </span>
+                    </div>
+                  </Link>
+                </li>
+              </>
+            )}
 
             {user?.role === roles.ADMIN && (
               <>
                 <li className="w-full">
                   <Link
                     to="/users"
-                    className={`flex items-center p-2 text-base justify-between font-normal ${location.pathname === "/users"
-                      ? "bg-gray-700 dark:bg-gray-900"
-                      : "bg-inherit"
-                      } rounded-lg text-white hover:bg-gray-100 dark:hover:bg-gray-700`}
+                    className={`flex items-center p-2 text-base justify-between font-normal ${
+                      location.pathname === "/users"
+                        ? "bg-gray-700 dark:bg-gray-900"
+                        : "bg-inherit"
+                    } rounded-lg text-white hover:bg-gray-100 dark:hover:bg-gray-700`}
                   >
                     <div className="flex items-center">
                       <UserIcon className="text-gray-500 w-5 h-5" />
-                      <span className="hidden md:inline-block ml-3">Manager Account</span>
+                      <span className="hidden md:inline-block ml-3">
+                        Manager Account
+                      </span>
+                    </div>
+                  </Link>
+                </li>
+                <li className="w-full">
+                  <Link
+                    to="/departments"
+                    className={`flex items-center p-2 text-base justify-between font-normal ${
+                      location.pathname === "/departments"
+                        ? "bg-gray-700 dark:bg-gray-900"
+                        : "bg-inherit"
+                    } rounded-lg text-white hover:bg-gray-100 dark:hover:bg-gray-700`}
+                  >
+                    <div className="flex items-center">
+                      <UserGroupIcon className="text-gray-500 w-5 h-5" />
+                      <span className="hidden md:inline-block ml-3">
+                        Manager Departments
+                      </span>
+                    </div>
+                  </Link>
+                </li>
+                <li className="w-full">
+                  <Link
+                    to="/academy"
+                    className={`flex items-center p-2 text-base justify-between font-normal ${
+                      location.pathname === "/academy"
+                        ? "bg-gray-700 dark:bg-gray-900"
+                        : "bg-inherit"
+                    } rounded-lg text-white hover:bg-gray-100 dark:hover:bg-gray-700`}
+                  >
+                    <div className="flex items-center">
+                      <CalendarIcon className="text-gray-500 w-5 h-5" />
+                      <span className="hidden md:inline-block ml-3">
+                        Manager Academy
+                      </span>
                     </div>
                   </Link>
                 </li>

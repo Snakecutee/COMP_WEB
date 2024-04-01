@@ -1,23 +1,27 @@
-import {
-  ChevronLeftIcon,
-  ChatAltIcon,
-} from "@heroicons/react/solid";
+import { ChevronLeftIcon, ChatAltIcon } from "@heroicons/react/solid";
 import { useNavigate } from "react-router-dom";
-import moment from 'moment';
+import moment from "moment";
 import { roles } from "../constants/role";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
+import {
+  getAllIdeaWithFilter,
+  tokenRequestInterceptor,
+  getAllAcademic,
+} from "../apiServices/index";
+import { getNewToken } from "../store/actions/authenticateAction";
 
 const IdeaItem = ({
   index,
   title,
   description,
   commentCount,
-  category,
   like,
   id,
   date,
   view,
-  role
+  role,
+  academyId,
+  magazine,
 }) => {
   function numberWithCommas(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -26,18 +30,13 @@ const IdeaItem = ({
   const navigate = useNavigate();
 
   const handleNavigate = (e) => {
-    navigate(`/post/${id}`)
-  }
-
+    navigate(`/post/${id}`);
+  };
 
   return (
     <li key={index} className="mb-5 w-full">
       <div
-        onClick={
-          role === roles.STUDENT || role === roles.MARKETING_COORDINATOR
-            ? handleNavigate
-            : null
-        }
+        onClick={handleNavigate}
         className="cursor-pointer flex justify-between items-center bg-gray-200 py-6 px-4 rounded-xl"
       >
         <div className="flex gap-3 items-center">
@@ -54,13 +53,22 @@ const IdeaItem = ({
               <p className="hidden md:inline-block max-w-md w-full truncate">
                 {description}
               </p>
+              {academyId && (
+                <p className="text-gray-800 text-sm  leading-normal md:leading-relaxed">
+                  Academy: {academyId}
+                </p>
+              )}
+              {magazine && (
+                <p className="text-gray-800 text-sm leading-normal md:leading-relaxed">
+                  Magazine: {magazine}
+                </p>
+              )}
             </div>
             <div className="flex text-gray-600 gap-3 md:gap-10">
               <div className="flex items-center gap-1">
                 <ChatAltIcon className="w-5 h-5" />
                 <span className="font-bold">{commentCount}</span>
               </div>
-              <span className="font-medium text-sm">{category}</span>
               <span className="hidden md:inline-block font-medium underline cursor-pointer">
                 {moment(new Date(date), "YYYYMMDD").fromNow()}
               </span>
