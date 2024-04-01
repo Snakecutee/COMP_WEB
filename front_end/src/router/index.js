@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import PrivateRoute from "./customRouters/privateRouter";
 import UnauthorizeRoute from "./customRouters/unauthorizeRouter";
-
+import Departments from "../screens/departments";
 import LoginPage from "../screens/login";
 import UserPage from "../screens/users/";
 import ErrorPage from "../screens/error";
@@ -35,6 +35,15 @@ const AppRouter = () => {
           element={
             <PrivateRoute allowRoles={[roles.ADMIN]}>
               <UserPage />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/departments"
+          element={
+            <PrivateRoute allowRoles={[roles.ADMIN]}>
+              <Departments />
             </PrivateRoute>
           }
         />

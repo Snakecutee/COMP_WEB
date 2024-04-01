@@ -8,17 +8,17 @@ import { logout, getNewToken } from "../store/actions/authenticateAction";
 import Modal from "./modal";
 import Profile from "../screens/users/profile";
 import avatar from "../assets/logo.png";
-import Password from './password';
-import Form from './form';
-import Button from './button';
-import {XCircleIcon, PencilAltIcon} from '@heroicons/react/solid'
+import Password from "./password";
+import Form from "./form";
+import Button from "./button";
+import { XCircleIcon, PencilAltIcon } from "@heroicons/react/solid";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import { ErrorMessage } from "@hookform/error-message";
 import ErrorMessageCustom from "./errorMessage";
-import {changePassword, tokenRequestInterceptor} from '../apiServices/'
-import {toast} from 'react-toastify'
+import { changePassword, tokenRequestInterceptor } from "../apiServices/";
+import { toast } from "react-toastify";
 
 const passwordChangeSchema = yup.object({
   oldPassword: yup.string().required("Old password must be filled"),
@@ -55,12 +55,21 @@ const Navbar = ({ authenticateReducer, doLogout, getNewTokenRequest }) => {
   });
 
   const navigation = [
-    
+    {
+      name: "Ideas",
+      href: "/student-idea",
+      current: location.pathname === "/student-idea",
+    },
+    {
+      name: "Magazine",
+      href: "/magazines",
+      current: location.pathname === "/magazines",
+    },
   ];
 
   const toggleChangePassword = (e) => {
-    setShowChangePassword(prev => !prev);
-  }
+    setShowChangePassword((prev) => !prev);
+  };
 
   function classNames(...classes) {
     return classes.filter(Boolean).join(" ");
@@ -69,10 +78,7 @@ const Navbar = ({ authenticateReducer, doLogout, getNewTokenRequest }) => {
   const handleChangePassword = async (formData) => {
     const changePasswordFunc = async () => {
       const changePasswordRetry = async () => {
-        const { data, status } = await changePassword(
-          formData,
-          token,
-        );
+        const { data, status } = await changePassword(formData, token);
         return { data, status };
       };
       const { status, data } = await tokenRequestInterceptor(
@@ -86,14 +92,13 @@ const Navbar = ({ authenticateReducer, doLogout, getNewTokenRequest }) => {
           newPassword: "",
           confirmPassword: "",
         });
-        toast.success("Password Changed")
-      }
-      else {
-        toast.error(data.message)
+        toast.success("Password Changed");
+      } else {
+        toast.error(data.message);
       }
     };
     changePasswordFunc();
-  }
+  };
 
   const handleLogout = (e) => {
     e.preventDefault();
@@ -166,7 +171,10 @@ const Navbar = ({ authenticateReducer, doLogout, getNewTokenRequest }) => {
                           </span>
                           <img
                             className="h-8 w-8 rounded-full"
-                            src={process.env.REACT_APP_BASE_STATIC_FILE + user?.avatar || avatar}
+                            src={
+                              process.env.REACT_APP_BASE_STATIC_FILE +
+                                user?.avatar || avatar
+                            }
                             alt=""
                           />
                         </Menu.Button>

@@ -20,7 +20,7 @@ app.use("/statics", express.static(path.join(__dirname, "statics")));
 app.use(passport.initialize());
 app.use(
   cors({
-    origin: ["http://localhost:3000", ],
+    origin: ["http://localhost:3000","http://localhost:3001" ],
     credentials: true,
     methods: ["GET", "PUT", "POST", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
