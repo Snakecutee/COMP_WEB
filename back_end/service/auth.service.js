@@ -3,6 +3,7 @@ const User = require("../model/user");
 const RefreshToken = require("../model/refresh-token.model");
 const crypto = require("crypto");
 const CryptoJS = require("crypto-js");
+const AcademicYearModel = require("../model/academicYear");
 
 const randomTokenString = () => {
   return crypto.randomBytes(40).toString("hex");
@@ -60,54 +61,55 @@ const refreshJwtToken = async (token) => {
 };
 
 const register = async (registerAccount, origin) => {
-    const { username, password, role } = registerAccount;
-    const checkAccountExistedInDb = await User.findOne({ username });
-    if (checkAccountExistedInDb) {
-      throw new Error("Account already exists");
-    } 
-    else {
-      try {
-        const createAccount = new User({
-          ...registerAccount,
-          email: username,
-          password: password,
-          role: role || process.env.STUDENT,
+  const { username, password, role } = registerAccount;
+  const checkAccountExistedInDb = await User.findOne({ username });
+  if (checkAccountExistedInDb) {
+    throw new Error("Account already exists");
+  } else {
+    try {
+      const createAccount = new User({
+        ...registerAccount,
+        email: username,
+        password: password,
+        role: role || process.env.STUDENT,
+      });
+      await createAccount.save();
+      return createAccount;
+    } catch (error) {
+      if (error.name === "ValidationError") {
+        let errors = {};
+
+        Object.keys(error.errors).forEach((key) => {
+          errors[key] = error.errors[key].message;
         });
-        await createAccount.save();
-        return createAccount;
-      } catch (error) {
-        if (error.name === "ValidationError") {
-          let errors = {};
-  
-          Object.keys(error.errors).forEach((key) => {
-            errors[key] = error.errors[key].message;
-          });
-          console.log(errors);
-  
-          throw new Error(errors);
-        }
+        console.log(errors);
+
+        throw new Error(errors);
       }
     }
-  };
-  
-  const changePassword = async (user, oldPass, newPass) => {
-    const userInDb = await User.findById(user.id);
-   const decrypted = CryptoJS.AES.decrypt(userInDb.password, process.env.ENCRYPT_KEY);
-   const rawPassword = decrypted.toString(CryptoJS.enc.Utf8);
-   if (rawPassword === oldPass) {
-     userInDb.password = newPass;
-     await userInDb.save();
-   } else {
-     throw new Error("Old password is wrong")
-   }
   }
-  
-  module.exports = {
-    register,
-    signToken,
-    generateRefreshToken,
-    refreshJwtToken,
-    revokeToken,
-    changePassword,
-  };
-  
+};
+
+const changePassword = async (user, oldPass, newPass) => {
+  const userInDb = await User.findById(user.id);
+  const decrypted = CryptoJS.AES.decrypt(
+    userInDb.password,
+    process.env.ENCRYPT_KEY
+  );
+  const rawPassword = decrypted.toString(CryptoJS.enc.Utf8);
+  if (rawPassword === oldPass) {
+    userInDb.password = newPass;
+    await userInDb.save();
+  } else {
+    throw new Error("Old password is wrong");
+  }
+};
+
+module.exports = {
+  register,
+  signToken,
+  generateRefreshToken,
+  refreshJwtToken,
+  revokeToken,
+  changePassword,
+};

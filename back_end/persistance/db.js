@@ -1,6 +1,7 @@
 const db = {};
 const mongoose = require("mongoose");
 const User = require("../model/user");
+const Department = require("../model/department");
 
 mongoose.Promise = global.Promise;
 
@@ -10,12 +11,20 @@ db.seedData = async () => {
   try {
     const userInDbCount = await User.estimatedDocumentCount();
     if (!userInDbCount) {
-
       const departmentCount = await Department.estimatedDocumentCount();
-      if(!departmentCount) {
-        const itMajor = new Department({name: "IT Major", description: "For IT Staff"})
-        const bizMajor = new Department({name: "Business Major", description: "For Business Staff"})
-        const gdMajor = new Department({name: "Graphic Design Major", description: "For Graphic Design Staff"})
+      if (!departmentCount) {
+        const itMajor = new Department({
+          name: "IT Major",
+          description: "For IT Staff",
+        });
+        const bizMajor = new Department({
+          name: "Business Major",
+          description: "For Business Staff",
+        });
+        const gdMajor = new Department({
+          name: "Graphic Design Major",
+          description: "For Graphic Design Staff",
+        });
         await itMajor.save();
         await bizMajor.save();
         await gdMajor.save();
