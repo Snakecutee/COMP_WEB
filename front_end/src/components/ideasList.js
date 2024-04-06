@@ -73,7 +73,7 @@ const IdeaList = ({ authenticateReducer, getNewTokenRequest }) => {
             <option value={filters.ALPHABET}>Alphabet</option>
             <option value={filters.DATE_ASC}>Newest</option>
             <option value={filters.DATE_DESC}>Oldest</option>
-            <option value={filters.POPULAR}>Popular</option>
+           
             <option value={filters.LIKE}>Upvote</option>
             <option value={filters.DISLIKE}>Downvote</option>
           </select>
