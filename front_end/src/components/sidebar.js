@@ -156,7 +156,7 @@ const SideBar = ({
                     <div className="flex items-center">
                       <UserGroupIcon className="text-gray-500 w-5 h-5" />
                       <span className="hidden md:inline-block ml-3">
-                        Manager Department
+                        Manager Departments
                       </span>
                     </div>
                   </Link>

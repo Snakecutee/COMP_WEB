@@ -6,6 +6,8 @@ import {
   tokenRequestInterceptor,
   updateUser,
   uploadImage,
+  getAllDepartment,
+  getAllAcademic,
 } from "../../apiServices/index";
 import { toast } from "react-toastify";
 import Form from "../../components/form";
@@ -45,9 +47,17 @@ const initial = {
   role: "",
   address: "",
   avatar: "",
+  department: "",
+  academy: "",
 };
 const options = roles.ALL.map((role) => ({ name: role }));
-const EditUserPage = ({ close, userId, token, getNewTokenRequest, loadUser }) => {
+const EditUserPage = ({
+  close,
+  userId,
+  token,
+  getNewTokenRequest,
+  loadUser,
+}) => {
   const [user, setUser] = useState(initial);
   const {
     register,
@@ -70,6 +80,7 @@ const EditUserPage = ({ close, userId, token, getNewTokenRequest, loadUser }) =>
       role: "",
       address: "",
       avatar: "",
+      department: user?.department,
     },
   });
 
@@ -83,7 +94,9 @@ const EditUserPage = ({ close, userId, token, getNewTokenRequest, loadUser }) =>
     register("role");
     register("address");
     register("avatar");
+    register("department");
   }, [register]);
+  const [departments, setDepartments] = useState([]);
 
   const onEditChange = (e) => {
     if (e.target.name === "avatarFile") {
@@ -93,7 +106,6 @@ const EditUserPage = ({ close, userId, token, getNewTokenRequest, loadUser }) =>
         const { status, data } = await uploadImage(formData);
         if (status === 200) {
           setValue("avatar", data.path);
-          console.log(data.path);
           setUser((prev) => ({ ...prev, avatar: data.path }));
         }
       };
@@ -102,6 +114,24 @@ const EditUserPage = ({ close, userId, token, getNewTokenRequest, loadUser }) =>
       //setValue((prev) => ({ ...prev, [e.target.name]: e.target.value }));
     }
   };
+
+  const loadDepartment = useCallback(async () => {
+    const loadAllDataOfDepartment = async () => {
+      const { data, status } = await getAllDepartment(token);
+      return { data, status };
+    };
+    const { status, data } = await tokenRequestInterceptor(
+      loadAllDataOfDepartment,
+      getNewTokenRequest
+    );
+    if (status === 200) {
+      setDepartments((prev) => data);
+    }
+  }, [token, setValue, getNewTokenRequest]);
+
+  useEffect(() => {
+    loadDepartment();
+  }, [loadDepartment]);
 
   const loadData = useCallback(async () => {
     const loadDataOfUser = async () => {
@@ -114,6 +144,7 @@ const EditUserPage = ({ close, userId, token, getNewTokenRequest, loadUser }) =>
       getNewTokenRequest
     );
     if (status === 200) {
+      setUser(data);
       setValue("fullname", data.fullname);
       setValue("dateOfBirth", data?.dateOfBirth.slice(0, 10));
       setValue("gender", data.gender);
@@ -121,6 +152,7 @@ const EditUserPage = ({ close, userId, token, getNewTokenRequest, loadUser }) =>
       setValue("address", data.address);
       setValue("role", data.role || "");
       setValue("avatar", data.avatar || "");
+      setValue("department", data.department);
     }
   }, [token, getNewTokenRequest, userId, setValue]);
 
@@ -128,13 +160,17 @@ const EditUserPage = ({ close, userId, token, getNewTokenRequest, loadUser }) =>
     loadData();
   }, [loadData]);
 
+  useEffect(() => {
+    setValue("department", user.department);
+  }, [user.id, departments.length]);
+
   const onSubmit = async (formData) => {
     const { status, data } = await updateUser(formData, userId, token);
     if (status === 400) {
       toast.error(data.message);
     } else if (status === 200) {
       toast.success("Update User Successfully");
-      loadUser()
+      loadUser();
       reset({
         dateOfBirth: "",
         gender: "Male",
@@ -153,8 +189,15 @@ const EditUserPage = ({ close, userId, token, getNewTokenRequest, loadUser }) =>
     <>
       <div className="w-screen sm:max-w-xl">
         <Form title="Edit Account">
-          <label htmlFor="avatarFile" className="w-32 h-auto text-center bg-green-300 rounded-md">
-            {user.avatar ? <img src={process.env.REACT_APP_BASE_STATIC_FILE + user.avatar} /> : "Upload Avatar"}
+          <label
+            htmlFor="avatarFile"
+            className="w-32 h-auto text-center bg-green-300 rounded-md"
+          >
+            {user.avatar ? (
+              <img src={process.env.REACT_APP_BASE_STATIC_FILE + user.avatar} />
+            ) : (
+              "Upload Avatar"
+            )}
           </label>
           <InputField
             id="avatarFile"
@@ -235,7 +278,11 @@ const EditUserPage = ({ close, userId, token, getNewTokenRequest, loadUser }) =>
               { name: roles.ADMIN },
             ]}
           />
-
+          <SelectOption
+            {...register("department", { defaultValue: user.department })}
+            defaultValue={getValues("department")}
+            listData={departments.filter((item) => !item.deleted)}
+          />
           <Button
             onClick={handleSubmit(onSubmit)}
             role="submit"

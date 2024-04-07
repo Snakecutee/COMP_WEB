@@ -7,9 +7,7 @@ import {
   getAllUser,
   searchUserByUsername,
   getSingleUser,
-
   deleteUser,
-
 } from "../../apiServices";
 import { getNewToken } from "../../store/actions/authenticateAction";
 import Modal from "../../components/modal";
@@ -20,7 +18,6 @@ import { toast } from "react-toastify";
 import {
   IdentificationIcon,
   BackspaceIcon,
-
   PencilAltIcon,
 } from "@heroicons/react/solid";
 import { roles } from "../../constants/role";
@@ -84,11 +81,10 @@ const UserPage = ({ getNewTokenRequest, token }) => {
 
   const detailHandler = (e, id) => {
     e.preventDefault();
-    console.log(id);
     const loadSingleUser = async () => {
       const loadSingleUser = async () => {
         const { data, status } = await getSingleUser(token, id);
-        console.log(data);
+
         return { data, status };
       };
       const { status, data } = await tokenRequestInterceptor(
@@ -128,14 +124,14 @@ const UserPage = ({ getNewTokenRequest, token }) => {
     e.preventDefault();
     setUser((prev) => users.find((user) => user.id === id));
     setOpenEdit((prev) => !prev);
-
   };
 
   const renderTableHead = (item, index) => (
     <th key={index} className="p-2 whitespace-nowrap">
       <div
-        className={`font-semibold ${item.toLowerCase() === "actions" ? "text-center" : "text-left"
-          }`}
+        className={`font-semibold ${
+          item.toLowerCase() === "actions" ? "text-center" : "text-left"
+        }`}
       >
         {item}
       </div>

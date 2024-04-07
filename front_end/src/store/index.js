@@ -4,11 +4,11 @@ import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 
 import authenticateReducer from "./reducers/authenticateReducer";
-import subRouterReducer from './reducers/subRouteReducer';
+import subRouterReducer from "./reducers/subRouteReducer";
 
 const rootReducer = combineReducers({
   authenticateReducer,
-  subRouterReducer
+  subRouterReducer,
 });
 
 const persistsConfig = {
@@ -25,7 +25,7 @@ export const saga = createSagaMiddleware();
 
 export const store = createStore(
   persistedReducer,
- composeEnhancers(applyMiddleware(saga))
+  composeEnhancers(applyMiddleware(saga))
 );
 
 export const persistor = persistStore(store);
