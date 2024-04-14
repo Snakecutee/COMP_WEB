@@ -513,13 +513,13 @@ const MagazinePage = ({ getNewTokenRequest, authenticateReducer }) => {
             listData={academic.filter((item) => !item.deleted)}
             onChange={onAcademyChange}
           />
-          {/* <Button
+          <Button
             onClick={handleUpdateSubmit}
             role="submit"
             type="primary"
             icon={PencilAltIcon}
             title="Update"
-          /> */}
+          />
         </Form>
       </Modal>
     </div>

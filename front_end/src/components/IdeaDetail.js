@@ -145,13 +145,7 @@ const IdeaDetail = ({ authenticateReducer, getNewTokenRequest }) => {
             </div>
           )}
           <div className="ml-2 flex-1">
-            <div className="text-sm ">
-              <span className="font-semibold">
-                {ideaDetail?.isAnonymous
-                  ? "Anonymous"
-                  : ideaDetail?.user?.fullname}
-              </span>
-            </div>
+           
             <div className="text-gray-500 text-xs ">
               {ideaDetail?.user?.role} - {ideaDetail.user?.department}
             </div>
@@ -240,14 +234,7 @@ const IdeaDetail = ({ authenticateReducer, getNewTokenRequest }) => {
                   onChange={(e) => setCommentContent(e.target.value)}
                   placeholder="Leave your comment"
                 />
-                <div>
-                  <span className="pr-2">Anonymous:</span>
-                  <input
-                    checked={isAnonymous}
-                    type="checkbox"
-                    onChange={toggleAnonymous}
-                  />
-                </div>
+                
               </div>
               <Button
                 role="button"
@@ -272,7 +259,7 @@ const IdeaDetail = ({ authenticateReducer, getNewTokenRequest }) => {
                 time={comment.createdAt}
                 user={comment?.user}
                 content={comment?.content}
-                isAnonymous={comment?.isAnonymous}
+               
               />
             ))}
         </div>

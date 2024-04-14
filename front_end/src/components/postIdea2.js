@@ -80,7 +80,7 @@ const PostIdea = ({ authenticateReducer, getNewTokenRequest }) => {
       title: "",
       description: "",
       category: "",
-      isAnonymous: false,
+      
     },
   });
 

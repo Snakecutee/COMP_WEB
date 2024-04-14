@@ -36,11 +36,11 @@ const getSingleIdea = async (req, res) => {
 };
 
 const commentToIdea = async (req, res) => {
-  const { userId, content, isAnonymous } = req.body;
+  const { userId, content, } = req.body;
   const { id } = req.params;
   const origin = req.get("origin");
 
-  await commentToAnIdea(id, content, userId, isAnonymous, origin);
+  await commentToAnIdea(id, content, userId, origin);
   res.status(201).json({ message: "comment success" });
 };
 const reactionToIdea = async (req, res) => {
@@ -58,7 +58,7 @@ const createIdeaWithDocument = async (req, res) => {
     description,
     documentLink,
     category,
-    isAnonymous,
+    
     academy,
     magazineId,
   } = req.body;
@@ -69,7 +69,7 @@ const createIdeaWithDocument = async (req, res) => {
     documentLink,
     category,
     userId,
-    isAnonymous,
+    
     academy,
     magazineId
   );

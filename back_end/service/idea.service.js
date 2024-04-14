@@ -183,7 +183,7 @@ const createIdea = async (
   documentLink = "",
   category,
   userId,
-  isAnonymous,
+  
   academy,
   magazineId
 ) => {
@@ -198,7 +198,7 @@ const createIdea = async (
     // category: categoryInDB._id,
     user: findUserIndDeaprtment._id,
     department: findUserIndDeaprtment.department,
-    isAnonymous,
+    
     academy: academyInDb._id,
     magazine: findMagazineInDb._id,
   });
@@ -216,12 +216,12 @@ const commentToAnIdea = async (
   postId,
   content,
   userId,
-  isAnonymous,
+  
   origin
 ) => {
   const ideaInDb = await IdeaModel.findById(postId);
   const author = await UserModel.findById(ideaInDb.user);
-  ideaInDb.comments.push({ content, user: userId, isAnonymous });
+  ideaInDb.comments.push({ content, user: userId, });
   await ideaInDb.save();
 };
 

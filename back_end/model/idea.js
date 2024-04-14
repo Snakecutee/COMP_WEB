@@ -13,7 +13,7 @@ const CommentSchema = new mongoose.Schema(
   {
     user: { type: mongoose.Types.ObjectId, ref: "Users" },
     content: { type: String, required: true },
-    isAnonymous: { type: Boolean, default: false },
+    
   },
   {
     timestamps: true,
@@ -33,7 +33,7 @@ const IdeaSchema = new mongoose.Schema(
     user: { type: mongoose.Types.ObjectId, ref: "Users" },
     reactions: [ReactionSchema],
     comments: [CommentSchema],
-    isAnonymous: { type: Boolean, default: false },
+    
     viewCount: { type: Number, default: 0 },
     department: { type: String, required: true },
     academy: {
