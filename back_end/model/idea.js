@@ -29,7 +29,7 @@ const IdeaSchema = new mongoose.Schema(
       ref: "Category",
       required: false,
     },
-    documentLink: { type: String },
+    documentLink: [{ type: String }],
     user: { type: mongoose.Types.ObjectId, ref: "Users" },
     reactions: [ReactionSchema],
     comments: [CommentSchema],

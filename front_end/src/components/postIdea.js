@@ -21,6 +21,7 @@ import TextArea from "../components/text-area";
 import SelectOption from "../components/SelectOption";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
+import emailjs from '@emailjs/browser'
 import {
   DocumentAddIcon,
   SwitchHorizontalIcon,
@@ -187,7 +188,28 @@ const PostIdea = ({ authenticateReducer, getNewTokenRequest }) => {
       setEditorData("");
       setLoading(false);
       setAgree(false);
-    }
+    
+      const serviceId = 'service_hi5gp6l'
+      const templateId = 'template_sw8biwe'
+      const publicKey = 'zaPE46kmC2XNJvLgF'
+
+      const templateParams = {
+        from_name: 'test',
+        from_email: 'test',
+        to_name: 'test',
+        message: 'test'
+      }
+
+      emailjs.send(serviceId, templateId, templateParams, publicKey).then(
+        (response) => {
+          console.log('EMAIL SEND SUCCESSFULLY!', response);
+        },
+        (error) => {
+          console.log('FAILED...', error);
+        },
+      );
+
+      }
   };
 
   const removeFile = (e) => {

@@ -12,6 +12,7 @@ const {
   findUserIdInDerpartment,
   findStaffPostOfDepatment,
   getFileUrl,
+  editIdea,
 } = require("../service/idea.service");
 
 const getAllIdeas = async (req, res) => {
@@ -20,6 +21,12 @@ const getAllIdeas = async (req, res) => {
   const pages = await countAllIdeas();
   const allIdeas = await getAllIdeaWithFilter(id, filter, page);
   res.status(200).json({ pages, data: allIdeas });
+};
+
+const updateIdea = async (req, res) => {
+  const { id } = req.params;
+  const editData = await editIdea(id, req.body);
+  res.status(201).json({ message: "Edit success", data: editData });
 };
 
 const getSingleIdea = async (req, res) => {
@@ -95,6 +102,7 @@ const findPostOfDepartment = async (req, res) => {
   res.status(200).json(result);
 };
 const uploadSupportDocument = async (req, res) => {
+  console.log("da la req.file uploadsupport", req.file);
   const filename = req.file.filename;
   const documentLink = await getFileUrl(filename);
 
@@ -104,6 +112,7 @@ module.exports = {
   createIdeaWithDocument,
   getAllIdeas,
   getSingleIdea,
+  updateIdea,
   commentToIdea,
   reactionToIdea,
   inscreaseViewOfIdea,
