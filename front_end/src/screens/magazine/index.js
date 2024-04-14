@@ -266,35 +266,36 @@ const MagazinePage = ({ getNewTokenRequest, authenticateReducer }) => {
     deleteMagazine();
   };
 
-  const renderTableBody = (item, index) => (
-    <tr key={index}>
-      <td className="p-2 whitespace-nowrap">
-        <div className="text-left">{item.name}</div>
-      </td>
-      <td className="p-2 whitespace-nowrap">
-        <div className="text-left">{item.description}</div>
-      </td>
-      <td className="p-2 whitespace-nowrap">
-        <div className="text-left">{dateFormatter(item.startDate)}</div>
-      </td>
-      <td className="p-2 whitespace-nowrap">
-        <div className="text-left">{dateFormatter(item.endDate)}</div>
-      </td>
-      <td className="p-2 whitespace-nowrap">
-        <div className="text-left">{item.department.name}</div>
-      </td>
-      <td className="p-2 whitespace-nowrap">
-        <div className="text-left">{item.academy.name}</div>
-      </td>
-      <td className="p-2 whitespace-nowrap">
-        <div className="flex gap-3">
-          <Button
-            icon={IdentificationIcon}
-            type="primary"
-            title="Detail"
-            onClick={(e) => navigate(`/magazines/${item._id}`)}
-          />
-          {user.role !== roles.STUDENT && (
+  const renderTableBody = (item, index) =>
+    user?.role === roles.MARKETING_MANAGER ? (
+      <tr key={index}>
+        <td className="p-2 whitespace-nowrap">
+          <div className="text-left">{item.name}</div>
+        </td>
+        <td className="p-2 whitespace-nowrap">
+          <div className="text-left">{item.description}</div>
+        </td>
+        <td className="p-2 whitespace-nowrap">
+          <div className="text-left">{dateFormatter(item.startDate)}</div>
+        </td>
+        <td className="p-2 whitespace-nowrap">
+          <div className="text-left">{dateFormatter(item.endDate)}</div>
+        </td>
+        <td className="p-2 whitespace-nowrap">
+          <div className="text-left">{item.department.name}</div>
+        </td>
+        <td className="p-2 whitespace-nowrap">
+          <div className="text-left">{item.academy.name}</div>
+        </td>
+        <td className="p-2 whitespace-nowrap">
+          <div className="flex gap-3">
+            <Button
+              icon={IdentificationIcon}
+              type="primary"
+              title="Detail"
+              onClick={(e) => navigate(`/magazines/${item._id}`)}
+            />
+
             <>
               <Button
                 onClick={(e) => editHandler(e, item._id)}
@@ -309,11 +310,59 @@ const MagazinePage = ({ getNewTokenRequest, authenticateReducer }) => {
                 title="Delete"
               />
             </>
-          )}
-        </div>
-      </td>
-    </tr>
-  );
+          </div>
+        </td>
+      </tr>
+    ) : (
+      user?.department === item.department.name && (
+        <tr key={index}>
+          <td className="p-2 whitespace-nowrap">
+            <div className="text-left">{item.name}</div>
+          </td>
+          <td className="p-2 whitespace-nowrap">
+            <div className="text-left">{item.description}</div>
+          </td>
+          <td className="p-2 whitespace-nowrap">
+            <div className="text-left">{dateFormatter(item.startDate)}</div>
+          </td>
+          <td className="p-2 whitespace-nowrap">
+            <div className="text-left">{dateFormatter(item.endDate)}</div>
+          </td>
+          <td className="p-2 whitespace-nowrap">
+            <div className="text-left">{item.department.name}</div>
+          </td>
+          <td className="p-2 whitespace-nowrap">
+            <div className="text-left">{item.academy.name}</div>
+          </td>
+          <td className="p-2 whitespace-nowrap">
+            <div className="flex gap-3">
+              <Button
+                icon={IdentificationIcon}
+                type="primary"
+                title="Detail"
+                onClick={(e) => navigate(`/magazines/${item._id}`)}
+              />
+              {user?.role === roles.MARKETING_MANAGER && (
+                <>
+                  <Button
+                    onClick={(e) => editHandler(e, item._id)}
+                    icon={PencilAltIcon}
+                    type="warning"
+                    title="Update"
+                  />
+                  <Button
+                    onClick={(e) => deleteHandler(e, item._id)}
+                    icon={BackspaceIcon}
+                    type="danger"
+                    title="Delete"
+                  />
+                </>
+              )}
+            </div>
+          </td>
+        </tr>
+      )
+    );
 
   const onDepartmentChange = (e) => {
     e.preventDefault();
@@ -359,7 +408,7 @@ const MagazinePage = ({ getNewTokenRequest, authenticateReducer }) => {
   };
   return (
     <div>
-      {user.role === roles.STUDENT ? (
+      {user.role !== roles.MARKETING_MANAGER ? (
         <Table
           limit={10}
           tableHead={magazineTableHead}
@@ -464,13 +513,13 @@ const MagazinePage = ({ getNewTokenRequest, authenticateReducer }) => {
             listData={academic.filter((item) => !item.deleted)}
             onChange={onAcademyChange}
           />
-          <Button
+          {/* <Button
             onClick={handleUpdateSubmit}
             role="submit"
             type="primary"
             icon={PencilAltIcon}
             title="Update"
-          />
+          /> */}
         </Form>
       </Modal>
     </div>

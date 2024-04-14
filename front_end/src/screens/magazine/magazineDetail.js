@@ -6,6 +6,7 @@ import magazine from ".";
 import Button from "../../components/button";
 import { IdentificationIcon } from "@heroicons/react/solid";
 import IdeaItem from "../../components/IdeaItem";
+import { roles } from "../../constants/role";
 const MagazineDatailPage = ({ getNewTokenRequest, authenticateReducer }) => {
   const [magazineDetail, setMagazineDetail] = useState({});
   const { token, user } = authenticateReducer;
@@ -28,14 +29,16 @@ const MagazineDatailPage = ({ getNewTokenRequest, authenticateReducer }) => {
         <div className="container max-w-xl md:max-w-screen-lg mx-auto bg-white border shadow-sm px-4 py-3 rounded-lg">
           <div className="flex items-center justify-between">
             <h3 className="font-bold my-2 text-2xl">{magazineDetail.name}</h3>
-            <Button
-              icon={IdentificationIcon}
-              type="primary"
-              title="Assign"
-              onClick={(e) =>
-                navigate(`/contribute?magazineId=${magazineDetail._id}`)
-              }
-            />
+            {user?.role === roles.STUDENT && (
+              <Button
+                icon={IdentificationIcon}
+                type="primary"
+                title="Assign"
+                onClick={(e) =>
+                  navigate(`/contribute?magazineId=${magazineDetail._id}`)
+                }
+              />
+            )}
           </div>
           <div>
             <div className="text-gray-500 text-xs ">

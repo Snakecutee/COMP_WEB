@@ -14,27 +14,28 @@ import {
   getMagazineById,
 } from "../apiServices/index";
 import { getNewToken } from "../store/actions/authenticateAction";
-import Form from "../components/form";
-import Button from "../components/button";
-import InputField from "../components/inputField";
-import TextArea from "../components/text-area";
-import SelectOption from "../components/SelectOption";
+import Form from "./form";
+import Button from "./button";
+import InputField from "./inputField";
+import TextArea from "./text-area";
+import SelectOption from "./SelectOption";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
+import emailjs from "@emailjs/browser";
 import {
   DocumentAddIcon,
   SwitchHorizontalIcon,
   DocumentIcon,
   XIcon,
 } from "@heroicons/react/solid";
-import FileUpload from "../components/fileUpload";
+import FileUpload from "./fileUpload";
 import { ErrorMessage } from "@hookform/error-message";
-import ErrorMessageCustom from "../components/errorMessage";
+import ErrorMessageCustom from "./errorMessage";
 import { toast } from "react-toastify";
-import TermAndCondition from "../components/submission";
+import TermAndCondition from "./submission";
 
-import Indicator from "../components/indicator";
-import { useSearchParams, useNavigate } from "react-router-dom";
+import Indicator from "./indicator";
+import { useSearchParams } from "react-router-dom";
 
 const ideaSubmitValidateSchema = yup.object().shape({
   title: yup.string().required("Title cannot be empty"),
@@ -51,7 +52,6 @@ const PostIdea = ({ authenticateReducer, getNewTokenRequest }) => {
   const [loading, setLoading] = useState(false);
   const [disablePost, setDisablePost] = useState(false);
   const [magazineDetail, setMagazineDetail] = useState({});
-  const navigate = useNavigate();
   const { token, user } = authenticateReducer;
   const [searchParams, setSearchParams] = useSearchParams();
   const magazineId = searchParams.get("magazineId");
@@ -146,6 +146,7 @@ const PostIdea = ({ authenticateReducer, getNewTokenRequest }) => {
       }
     });
   };
+
   const createFile = async () => {
     const blob = new Blob([editorData], { type: "text/plain" });
     const file = new File([blob], `content.md`, { type: "text/markdown" });
@@ -179,6 +180,7 @@ const PostIdea = ({ authenticateReducer, getNewTokenRequest }) => {
         }
       }
     }
+
     if (editorData) {
       documentLink = await createFile();
     }
@@ -200,7 +202,26 @@ const PostIdea = ({ authenticateReducer, getNewTokenRequest }) => {
       setEditorData("");
       setLoading(false);
       setAgree(false);
-      navigate("/student-idea");
+
+      const serviceId = "service_hi5gp6l";
+      const templateId = "template_sw8biwe";
+      const publicKey = "zaPE46kmC2XNJvLgF";
+
+      const templateParams = {
+        from_name: "test",
+        from_email: "test",
+        to_name: "test",
+        message: "test",
+      };
+
+      emailjs.send(serviceId, templateId, templateParams, publicKey).then(
+        (response) => {
+          console.log("EMAIL SEND SUCCESSFULLY!", response);
+        },
+        (error) => {
+          console.log("FAILED...", error);
+        }
+      );
     }
   };
 
@@ -219,15 +240,15 @@ const PostIdea = ({ authenticateReducer, getNewTokenRequest }) => {
             <TermAndCondition open={termOpen} setOpen={setTermOpen} />
             <Form title="Contribute Idea">
               <div className="w-full text-center">{magazineDetail.name}</div>
-              {/* <div className="w-full flex justify-end">
+              <div className="w-full flex justify-end">
+                
                 <Button
                   type={switchUpload ? `primary` : `success`}
                   onClick={handleSwitch}
                   title={`${switchUpload ? "Editor" : "Upload Document"}`}
                   icon={SwitchHorizontalIcon}
-                  disabled={file ? true : false}
                 />
-              </div> */}
+              </div>
               <InputField
                 {...register("title")}
                 type="text"

@@ -79,6 +79,15 @@ export const updateUser = (formData, id, token) =>
     }
   );
 
+export const updateIdea = (formData, id, token) =>
+  apiInstance.put(
+    `/ideas/update/${id}`,
+    { ...formData },
+    {
+      headers: { Authorization: `Bearer ${token}` },
+    }
+  );
+
 export const getUserByDepartment = (token, deparment, username = "") =>
   apiInstance.get(`/users/?department=${deparment}&username=${username}`, {
     headers: { Authorization: `Bearer ${token}` },
@@ -217,6 +226,7 @@ export const getSingleIdea = (id, token) =>
   apiInstance.get(`/ideas/${id}`, {
     headers: { Authorization: `Bearer ${token}` },
   });
+
 export const commentToIdea = (id, data, token) =>
   apiInstance.post(
     `/ideas/${id}/comment`,

@@ -10,6 +10,7 @@ import Departments from "../screens/departments";
 import Academy from "../screens/academics";
 import IdeaDetail from "../components/IdeaDetail";
 import PostIdea from "../components/postIdea";
+import EditIdea from "../components/editIdea";
 
 import LandingPage from "../screens/landingPage";
 import IdeasList from "../components/ideasList";
@@ -89,6 +90,14 @@ const AppRouter = () => {
           element={
             <PrivateRoute>
               <IdeaDetail />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/ideas/update/:id"
+          element={
+            <PrivateRoute>
+              <EditIdea />
             </PrivateRoute>
           }
         />

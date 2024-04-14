@@ -1,24 +1,25 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { connect } from "react-redux";
+import { useParams, useNavigate } from "react-router-dom";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "ckeditor5-custom-build/build/ckeditor";
 import "../customLibStyle/ckeditor.css";
 import {
   tokenRequestInterceptor,
-  getCategory,
-  createIdea,
   uploadSupportDocument,
   uploadEditorContent,
   getAllAcademic,
   getMagazineById,
+  updateIdea,
 } from "../apiServices/index";
+import { getSingleIdea } from "../apiServices";
 import { getNewToken } from "../store/actions/authenticateAction";
-import Form from "../components/form";
-import Button from "../components/button";
-import InputField from "../components/inputField";
-import TextArea from "../components/text-area";
-import SelectOption from "../components/SelectOption";
+import Form from "./form";
+import Button from "./button";
+import InputField from "./inputField";
+import TextArea from "./text-area";
+import SelectOption from "./SelectOption";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import {
@@ -27,21 +28,24 @@ import {
   DocumentIcon,
   XIcon,
 } from "@heroicons/react/solid";
-import FileUpload from "../components/fileUpload";
+import FileUpload from "./fileUpload";
 import { ErrorMessage } from "@hookform/error-message";
-import ErrorMessageCustom from "../components/errorMessage";
+import ErrorMessageCustom from "./errorMessage";
 import { toast } from "react-toastify";
-import TermAndCondition from "../components/submission";
+import TermAndCondition from "./submission";
 
-import Indicator from "../components/indicator";
-import { useSearchParams, useNavigate } from "react-router-dom";
+import Indicator from "./indicator";
+import { useSearchParams } from "react-router-dom";
+import IdeaDetail from "./IdeaDetail";
 
 const ideaSubmitValidateSchema = yup.object().shape({
   title: yup.string().required("Title cannot be empty"),
   description: yup.string().required("Description cannot be empty"),
 });
 
-const PostIdea = ({ authenticateReducer, getNewTokenRequest }) => {
+const EditIdea = ({ authenticateReducer, getNewTokenRequest }) => {
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
   const [switchUpload, setSwitchUpload] = useState(true);
   const [file, setFile] = useState([]);
   const [academic, setAcademic] = useState([]);
@@ -49,11 +53,56 @@ const PostIdea = ({ authenticateReducer, getNewTokenRequest }) => {
   const [termOpen, setTermOpen] = useState(false);
   const [editorData, setEditorData] = useState();
   const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [disablePost, setDisablePost] = useState(false);
   const [magazineDetail, setMagazineDetail] = useState({});
-  const navigate = useNavigate();
   const { token, user } = authenticateReducer;
   const [searchParams, setSearchParams] = useSearchParams();
+  const [ideaDetail, setIdeaDetail] = useState({});
+  const navigate = useNavigate();
+
+  const handleChangeTitle = (event) => {
+    setTitle(event.target.value);
+  };
+  const handleChangeDesc = (event) => {
+    setDescription(event.target.value);
+  };
+
+  const { id } = useParams();
+  const getIdeaDetail = useCallback(async () => {
+    // setIsLoading(true);
+    const { data, status } = await getSingleIdea(id, token);
+
+    if (status === 200) {
+      setIdeaDetail(data.data);
+    }
+  }, [id, token, user.id]);
+
+  useEffect(() => {
+    getIdeaDetail();
+  }, []);
+
+  useEffect(() => {
+    if (ideaDetail && Object.keys(ideaDetail).length !== 0) {
+      setTitle(ideaDetail.title);
+      setDescription(ideaDetail.description);
+      console.log("da cap nhat thanh cong", ideaDetail);
+      setIsLoading(false);
+    }
+  }, [ideaDetail]);
+
+  const handleUpload = (e) => {
+    const uploadedFiles = Array.from(e.target.files);
+
+    setFile((prevFiles) => {
+      if (Array.isArray(prevFiles)) {
+        return [...prevFiles, ...uploadedFiles];
+      } else {
+        return [...uploadedFiles];
+      }
+    });
+  };
+
   const magazineId = searchParams.get("magazineId");
   const getMegazineDetail = useCallback(async () => {
     if (magazineId) {
@@ -108,62 +157,13 @@ const PostIdea = ({ authenticateReducer, getNewTokenRequest }) => {
     getAcademicYear();
   }, [getAcademicYear]);
 
-  // const getAllCategory = useCallback(async () => {
-  //   const loadAllDataOfCategory = async () => {
-  //     const { data, status } = await getCategory(token);
-  //     return { data, status };
-  //   };
-  //   const { status, data } = await tokenRequestInterceptor(
-  //     loadAllDataOfCategory,
-  //     getNewTokenRequest
-  //   );
-  //   if (status === 200) {
-  //     setCategories((prev) => data);
-  //     setValue("category", data[0].name);
-  //   }
-  // }, [token, getNewTokenRequest]);
-
-  // useEffect(() => {
-  //   getAllCategory();
-  // }, [getAllCategory]);
-
-  const handleSwitch = (e) => {
-    e.preventDefault();
-    if (!switchUpload) {
-      document.querySelector(".ck-toolbar").remove();
-    }
-    setSwitchUpload(!switchUpload);
-  };
-
-  const handleUpload = (e) => {
-    const uploadedFiles = Array.from(e.target.files);
-
-    setFile((prevFiles) => {
-      if (Array.isArray(prevFiles)) {
-        return [...prevFiles, ...uploadedFiles];
-      } else {
-        return [...uploadedFiles];
-      }
-    });
-  };
-  const createFile = async () => {
-    const blob = new Blob([editorData], { type: "text/plain" });
-    const file = new File([blob], `content.md`, { type: "text/markdown" });
-    let formData = new FormData();
-    formData.append("editor-content", file);
-    const { data, status } = await uploadEditorContent(formData, token);
-    if (status === 201) {
-      return data.documentLink;
-    }
-  };
-
   const capitalize = (string) => {
     return string.charAt(0).toUpperCase() + string.slice(1);
   };
 
   const submitIdeaHandler = async (formData) => {
-    setLoading(true);
-    let documentLink = [];
+    setIsLoading(true);
+    let documentLink = ideaDetail.documentLink;
     if (file.length > 0) {
       for (const fileItem of file) {
         const documentUpload = new FormData();
@@ -179,9 +179,7 @@ const PostIdea = ({ authenticateReducer, getNewTokenRequest }) => {
         }
       }
     }
-    if (editorData) {
-      documentLink = await createFile();
-    }
+    console.log("document link", documentLink);
     let ideaSubmitBody = {
       ...formData,
       title: formData.title
@@ -191,14 +189,13 @@ const PostIdea = ({ authenticateReducer, getNewTokenRequest }) => {
       documentLink,
       magazineId: magazineId,
     };
-    console.log("ket qua tra ve documentlink", documentLink);
-    const uploadIdea = await createIdea(ideaSubmitBody, token);
+    const uploadIdea = await updateIdea(ideaSubmitBody, id, token);
     if (uploadIdea.status === 201) {
       toast.success(uploadIdea.data.message);
       reset();
       setFile(null);
       setEditorData("");
-      setLoading(false);
+      setIsLoading(false);
       setAgree(false);
       navigate("/student-idea");
     }
@@ -212,25 +209,20 @@ const PostIdea = ({ authenticateReducer, getNewTokenRequest }) => {
 
   return (
     <>
-      {!disablePost ? (
+      {!isLoading ? (
         <>
           <Indicator open={loading} />
+
           <div className="w-screen md:max-w-4xl mx-auto my-20">
             <TermAndCondition open={termOpen} setOpen={setTermOpen} />
             <Form title="Contribute Idea">
               <div className="w-full text-center">{magazineDetail.name}</div>
-              {/* <div className="w-full flex justify-end">
-                <Button
-                  type={switchUpload ? `primary` : `success`}
-                  onClick={handleSwitch}
-                  title={`${switchUpload ? "Editor" : "Upload Document"}`}
-                  icon={SwitchHorizontalIcon}
-                  disabled={file ? true : false}
-                />
-              </div> */}
+
               <InputField
                 {...register("title")}
                 type="text"
+                value={title}
+                onChange={handleChangeTitle}
                 placeholder="Idea Title"
               />
               <ErrorMessage
@@ -248,6 +240,8 @@ const PostIdea = ({ authenticateReducer, getNewTokenRequest }) => {
               <TextArea
                 {...register("description")}
                 rows={5}
+                value={description}
+                onChange={handleChangeDesc}
                 placeholder="Idea Description"
               />
               <ErrorMessage
@@ -328,9 +322,7 @@ const PostIdea = ({ authenticateReducer, getNewTokenRequest }) => {
           </div>
         </>
       ) : (
-        <div className="w-screen md:max-w-4xl mx-auto my-20">
-          <h2 className="text-red-800 mt-5">Create New Idea Is Close</h2>
-        </div>
+        <Indicator open={isLoading} />
       )}
     </>
   );
@@ -348,4 +340,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(PostIdea);
+export default connect(mapStateToProps, mapDispatchToProps)(EditIdea);

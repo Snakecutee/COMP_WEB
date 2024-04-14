@@ -1,4 +1,5 @@
 const IdeaModel = require("../model/idea");
+
 const UserModel = require("../model/user");
 const CategoryModel = require("../model/category");
 const DepartmentModel = require("../model/department");
@@ -150,6 +151,26 @@ const getIdeaById = async (id) => {
     });
 };
 
+const editIdea = async (id, editIdeaItem) => {
+  try {
+    const { title, description, documentLink } = editIdeaItem;
+
+    const idea = await IdeaModel.findOneAndUpdate(
+      { _id: id },
+      { $set: { title, description, documentLink } },
+      { new: true }
+    );
+
+    if (!idea) {
+      throw new Error("Idea not found");
+    }
+
+    return idea;
+  } catch (error) {
+    console.error("Error editing idea:", error);
+    throw error;
+  }
+};
 const increaseView = async (id) => {
   const increaseViewCount = await IdeaModel.findById(id);
   increaseViewCount.viewCount = increaseViewCount.viewCount + 1;
@@ -328,4 +349,5 @@ module.exports = {
   countIdeaInOneDepartment,
   findStaffPostOfDepatment,
   getFileUrl,
+  editIdea,
 };

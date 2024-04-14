@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import { connect } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import {
   getSingleIdea,
   reactToIdea,
@@ -15,6 +15,12 @@ import {
   PaperAirplaneIcon,
   DownloadIcon,
 } from "@heroicons/react/outline";
+import {
+  DocumentAddIcon,
+  SwitchHorizontalIcon,
+  DocumentIcon,
+  XIcon,
+} from "@heroicons/react/solid";
 import { getNewToken } from "../store/actions/authenticateAction";
 
 import TextAria from "../components/text-area";
@@ -138,7 +144,7 @@ const IdeaDetail = ({ authenticateReducer, getNewTokenRequest }) => {
               </span>
             </div>
           )}
-          <div className="ml-2">
+          <div className="ml-2 flex-1">
             <div className="text-sm ">
               <span className="font-semibold">
                 {ideaDetail?.isAnonymous
@@ -167,6 +173,19 @@ const IdeaDetail = ({ authenticateReducer, getNewTokenRequest }) => {
               </svg>
             </div>
           </div>
+          <div>
+            {user?.role === roles.STUDENT &&
+              user?.id === ideaDetail?.user?.id && (
+                <Link to={`/ideas/update/${id}`}>
+                  <Button
+                    type={`primary`}
+                    //onClick={handleSwitch}
+                    title={"Editor"}
+                    icon={SwitchHorizontalIcon}
+                  />
+                </Link>
+              )}
+          </div>
         </div>
         <h3 className="font-bold my-2 text-2xl">{ideaDetail.title}</h3>
         {ideaDetail.academy && (
@@ -192,49 +211,16 @@ const IdeaDetail = ({ authenticateReducer, getNewTokenRequest }) => {
           </a>
         )}
         {!disableLike ? (
-          <div className="flex gap-3 items-center mt-3">
-            <div className="flex gap-1 items-center">
-              <ChevronDoubleUpIcon
-                onClick={() => reaction(reactionType.LIKE)}
-                className={`${
-                  yourReaction?.reactionType === reactionType.LIKE
-                    ? "bg-orange-200 cursor-not-allowed"
-                    : "bg-gray-200 cursor-pointer"
-                } text-gray-500 w-7 h-7  rounded-md font-medium `}
-              />
-              <span className="font-medium">
-                {reactions?.filter(
-                  (item) => item.reactionType === reactionType.LIKE
-                )?.length || 0}{" "}
-                up votes
-              </span>
-            </div>
-            <div className="flex gap-1 items-center">
-              <ChevronDoubleDownIcon
-                onClick={() => reaction(reactionType.DISLIKE)}
-                className={`${
-                  yourReaction?.reactionType === reactionType.DISLIKE
-                    ? "bg-orange-200 cursor-not-allowed"
-                    : "bg-gray-200 cursor-pointer"
-                } text-gray-500 w-7 h-7  rounded-md font-medium `}
-              />
-              <span className="font-medium">
-                {reactions?.filter(
-                  (item) => item.reactionType === reactionType.DISLIKE
-                )?.length || 0}{" "}
-                down votes
-              </span>
-            </div>
-          </div>
+          <div className="flex gap-3 items-center mt-3"></div>
         ) : (
           <h2 className="text-red-800 mt-5 ">
             Thumbs Up or Thumbs Down Is Close
           </h2>
         )}
       </div>
-      <div className="container max-w-xl md:max-w-screen-lg mx-auto bg-white border shadow-sm rounded-lg mt-20">
+      <div className="container max-w-xl md:max-w-screen-lg mx-auto bg-white border shadow-sm rounded-lg mt-4">
         {!disableCmt ? (
-          user?.role === roles.STAFF && (
+          user?.role === roles.MARKETING_COORDINATOR && (
             <div className="w-full border flex px-2 py-4 items-center gap-2">
               <div className="flex items-center justify-center">
                 {user?.avatar ? (

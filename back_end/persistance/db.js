@@ -60,6 +60,7 @@ db.seedData = async () => {
         username: "marketingcoordinator",
         password: "123456",
         fullname: "marketing Coordinator",
+        department: "IT Major",
         email: "marketingcoordinator@gmail.com",
         dateOfBirth: new Date(),
         age: 21,

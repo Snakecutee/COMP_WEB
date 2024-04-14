@@ -25,7 +25,9 @@ const CommentItem = ({ user, content, time, isAnonymous }) => {
           <span>
             {isAnonymous
               ? "Anonymous"
-              : `${user.username} ( ${user.fullname} )- ${user?.department}`}
+              : `${user.username} ( ${user.fullname} ) ${
+                  user?.department || ""
+                }`}
           </span>
           <span className="text-gray-500 text-sm">
             {moment(new Date(time), "YYYYMMDD").fromNow()}

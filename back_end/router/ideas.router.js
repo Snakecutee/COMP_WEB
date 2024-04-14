@@ -21,6 +21,7 @@ const {
   countIdeaOfDepartment,
   findPostOfDepartment,
   uploadSupportDocument,
+  updateIdea,
 } = require("../controller/idea.controller");
 const passport = require("passport");
 const { authorize } = require("../middleware/authorization");
@@ -41,5 +42,6 @@ ideaRouter.post(
   uploadDocument.single("document"),
   uploadSupportDocument
 );
+ideaRouter.put("/update/:id", updateIdea);
 
 module.exports = ideaRouter;

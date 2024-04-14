@@ -72,17 +72,17 @@ const IdeaItem = ({
               <span className="hidden md:inline-block font-medium underline cursor-pointer">
                 {moment(new Date(date), "YYYYMMDD").fromNow()}
               </span>
-              <span className="font-medium text-sm cursor-pointer">
+              {/* <span className="font-medium text-sm cursor-pointer">
                 {view} Views
-              </span>
+              </span> */}
             </div>
           </div>
         </div>
-        <div className="flex flex-col items-center justify-center text-gray-700 py-3 px-2 rounded border-[1px] border-gray-500">
+        {/* <div className="flex flex-col items-center justify-center text-gray-700 py-3 px-2 rounded border-[1px] border-gray-500">
           <ChevronLeftIcon className="w-5 h-5 md:w-10 md:h-10 rotate-90" />
           <span className="font-bold">{numberWithCommas(like)}</span>
           <ChevronLeftIcon className="w-5 h-5 md:w-10 md:h-10 -rotate-90" />
-        </div>
+        </div> */}
       </div>
     </li>
   );

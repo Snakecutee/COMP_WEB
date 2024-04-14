@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/solid";
-import IdeaItem from "../components/IdeaItem";
+import IdeaItem from "./IdeaItem";
 import { filters } from "../constants/filter";
 import {
   getAllIdeaWithFilter,
@@ -8,6 +8,7 @@ import {
 } from "../apiServices/index";
 import { connect } from "react-redux";
 import { getNewToken } from "../store/actions/authenticateAction";
+import { useLocation, useParams } from "react-router-dom";
 
 const IdeaList = ({ authenticateReducer, getNewTokenRequest }) => {
   const [pages, setPages] = useState(1);
@@ -15,6 +16,11 @@ const IdeaList = ({ authenticateReducer, getNewTokenRequest }) => {
   const [ideas, setIdeas] = useState([]);
   const [filterOption, setFilterOption] = useState(filters.MY_IDEA);
   const { token, user } = authenticateReducer;
+
+
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const approve = queryParams.get("approve");
 
   const getAllIdeas = useCallback(async () => {
     const getAllData = async () => {
@@ -30,13 +36,19 @@ const IdeaList = ({ authenticateReducer, getNewTokenRequest }) => {
       getNewTokenRequest
     );
     if (status === 200) {
-      setIdeas(data.data);
-      setPages(data.pages);
-      window.scrollTo({
-        top: 0,
-        left: 0,
-        behavior: "smooth",
-      });
+      if (approve) {
+        setIdeas(data.data);
+        setPages(data.pages);
+        window.scrollTo({
+          top: 0,
+          left: 0,
+          behavior: "smooth",
+        });
+      }
+      else {
+        alert('Please, Manager must be approved')
+      }
+
     }
   }, [filterOption, currPage, getNewTokenRequest, token]);
 
@@ -64,7 +76,7 @@ const IdeaList = ({ authenticateReducer, getNewTokenRequest }) => {
           <h3 className="font-black text-gray-600 text-3xl">
             Your next favorite thing
           </h3>
-          {/* <select
+          <select
             className="border-none"
             value={filterOption}
             onChange={handleFilterChange}
@@ -76,7 +88,7 @@ const IdeaList = ({ authenticateReducer, getNewTokenRequest }) => {
             <option value={filters.POPULAR}>Popular</option>
             <option value={filters.LIKE}>Upvote</option>
             <option value={filters.DISLIKE}>Downvote</option>
-          </select> */}
+          </select>
         </div>
         <ul className="px-5 py-2">
           {ideas.map((item, index) => (
@@ -115,6 +127,7 @@ const IdeaList = ({ authenticateReducer, getNewTokenRequest }) => {
                   key={index}
                   onClick={() => setCurrPage(page + 1)}
                   aria-current="page"
+
                   className={`z-10 bg-indigo-50 ${
                     currPage === page + 1 && "border-indigo-500 text-indigo-600"
                   } inline-flex items-center px-4 py-2 border-2 text-sm font-medium`}
