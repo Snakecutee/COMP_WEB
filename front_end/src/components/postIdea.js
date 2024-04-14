@@ -188,7 +188,6 @@ const PostIdea = ({ authenticateReducer, getNewTokenRequest }) => {
       setEditorData("");
       setLoading(false);
       setAgree(false);
-    
       const serviceId = 'service_hi5gp6l'
       const templateId = 'template_sw8biwe'
       const publicKey = 'zaPE46kmC2XNJvLgF'
@@ -209,7 +208,7 @@ const PostIdea = ({ authenticateReducer, getNewTokenRequest }) => {
         },
       );
 
-      }
+    }
   };
 
   const removeFile = (e) => {
