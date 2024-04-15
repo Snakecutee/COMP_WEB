@@ -128,7 +128,7 @@ const EditIdea = ({ authenticateReducer, getNewTokenRequest }) => {
     defaultValues: {
       title: "",
       description: "",
-      category: "",
+     
       isAnonymous: false,
     },
   });

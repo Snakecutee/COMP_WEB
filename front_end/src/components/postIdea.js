@@ -6,7 +6,7 @@ import ClassicEditor from "ckeditor5-custom-build/build/ckeditor";
 import "../customLibStyle/ckeditor.css";
 import {
   tokenRequestInterceptor,
-  getCategory,
+ 
   createIdea,
   uploadSupportDocument,
   uploadEditorContent,
@@ -79,7 +79,7 @@ const PostIdea = ({ authenticateReducer, getNewTokenRequest }) => {
     defaultValues: {
       title: "",
       description: "",
-      category: "",
+      
       
     },
   });
@@ -108,24 +108,7 @@ const PostIdea = ({ authenticateReducer, getNewTokenRequest }) => {
     getAcademicYear();
   }, [getAcademicYear]);
 
-  // const getAllCategory = useCallback(async () => {
-  //   const loadAllDataOfCategory = async () => {
-  //     const { data, status } = await getCategory(token);
-  //     return { data, status };
-  //   };
-  //   const { status, data } = await tokenRequestInterceptor(
-  //     loadAllDataOfCategory,
-  //     getNewTokenRequest
-  //   );
-  //   if (status === 200) {
-  //     setCategories((prev) => data);
-  //     setValue("category", data[0].name);
-  //   }
-  // }, [token, getNewTokenRequest]);
-
-  // useEffect(() => {
-  //   getAllCategory();
-  // }, [getAllCategory]);
+  
 
   const handleSwitch = (e) => {
     e.preventDefault();

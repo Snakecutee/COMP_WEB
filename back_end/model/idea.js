@@ -24,11 +24,7 @@ const IdeaSchema = new mongoose.Schema(
   {
     title: { type: String, required: true },
     description: { type: String, required: true },
-    category: {
-      type: mongoose.Types.ObjectId,
-      ref: "Category",
-      required: false,
-    },
+  
     documentLink: [{ type: String }],
     user: { type: mongoose.Types.ObjectId, ref: "Users" },
     reactions: [ReactionSchema],

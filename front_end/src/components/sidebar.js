@@ -28,22 +28,22 @@ const SideBar = ({
   const navigate = useNavigate();
   const location = useLocation();
   const { token, user } = authenticateReducer;
-  const { departmentRouters, categoryRouters } = subRouterReducer;
+  const { departmentRouters } = subRouterReducer;
 
   const [departmentToggle, setDepartmentToggle] = useState(false);
 
-  const [categoryToggle, setCategoryToggle] = useState(false);
+  
 
   const [open, setOpen] = useState(false);
   const [userId, setUserId] = useState("");
 
   const handleDepToggle = (e) => {
     setDepartmentToggle((prev) => !prev);
-    setCategoryToggle(false);
+    
   };
 
   const handleCateToggle = (e) => {
-    setCategoryToggle((prev) => !prev);
+   
     setDepartmentToggle(false);
   };
 

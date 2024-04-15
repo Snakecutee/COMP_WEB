@@ -118,13 +118,13 @@ const archiveAllDocuments = async () => {
 
 const exportCsvFromDb = async () => {
   const allIdeaInDb = await Idea.find({  }).populate(
-    "category",
+    
     "name"
   );
   const jsonToParse = allIdeaInDb.map((idea) => ({
     Title: idea.title,
     Description: idea.description,
-    Category: idea.category.name,
+  
     Comments: idea.comments.length,
     "Total Reactions": idea.reactions.length,
   }));

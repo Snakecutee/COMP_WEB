@@ -57,7 +57,7 @@ const createIdeaWithDocument = async (req, res) => {
     title,
     description,
     documentLink,
-    category,
+    
     
     academy,
     magazineId,
@@ -67,7 +67,7 @@ const createIdeaWithDocument = async (req, res) => {
     title,
     description,
     documentLink,
-    category,
+    
     userId,
     
     academy,

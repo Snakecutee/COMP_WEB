@@ -415,7 +415,7 @@ const MagazinePage = ({ getNewTokenRequest, authenticateReducer }) => {
           tableData={magazines}
           renderData={renderTableBody}
           renderHead={renderTableHead}
-          tableTitle={"Academic Table"}
+          tableTitle={"Magazine Table"}
         />
       ) : (
         <Table
@@ -424,7 +424,7 @@ const MagazinePage = ({ getNewTokenRequest, authenticateReducer }) => {
           tableData={magazines}
           renderData={renderTableBody}
           renderHead={renderTableHead}
-          tableTitle={"Academic Table"}
+          tableTitle={"Magazine Table"}
           createButtonHandler={() => setOpen(true)}
         />
       )}

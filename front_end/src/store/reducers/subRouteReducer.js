@@ -1,7 +1,7 @@
 import { subRouterConstants } from "../../constants/index";
 const initialState = {
   departmentRouters: [],
-  categoryRouters: [],
+  
 };
 
 const { SUB_ROUTER_UPDATE_SUCCESS } = subRouterConstants;

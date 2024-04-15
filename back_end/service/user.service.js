@@ -65,7 +65,7 @@ const updateUser = async (id, updateAccount) => {
       ).toString();
       await User.findByIdAndUpdate(id, {
         fullname: fullname,
-        password: encryptedPassword,
+       
         dateOfBirth: dateOfBirth,
         address: address,
         age: age,
