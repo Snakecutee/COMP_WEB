@@ -1,5 +1,5 @@
 import moment from "moment";
-const CommentItem = ({ user, content, time, isAnonymous }) => {
+const CommentItem = ({ user, content, time,  }) => {
   return (
     <div
       key={user._id}
