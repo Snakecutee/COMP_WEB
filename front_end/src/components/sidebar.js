@@ -96,7 +96,7 @@ const SideBar = ({
                     <div className="flex items-center">
                       <UserIcon className="text-gray-500 w-5 h-5" />
                       <span className="hidden md:inline-block ml-3">
-                        Manager Idea
+                        Manager Ideas
                       </span>
                     </div>
                   </Link>
@@ -139,7 +139,7 @@ const SideBar = ({
                     <div className="flex items-center">
                       <UserIcon className="text-gray-500 w-5 h-5" />
                       <span className="hidden md:inline-block ml-3">
-                        Manager Account
+                        Manager Accounts
                       </span>
                     </div>
                   </Link>
