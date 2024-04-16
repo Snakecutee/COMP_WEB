@@ -62,7 +62,7 @@ const IdeaList = ({ authenticateReducer, getNewTokenRequest }) => {
       <div className="mx-auto">
         <div className="w-full flex items-center justify-between mb-10">
           <h3 className="font-black text-gray-600 text-3xl">
-            My List Ideas
+            My List Ideas and Comments
           </h3>
           {}
         </div>
