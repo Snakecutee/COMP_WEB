@@ -8,6 +8,8 @@ import {
 } from "../apiServices/index";
 import { connect } from "react-redux";
 import { getNewToken } from "../store/actions/authenticateAction";
+import { roles } from "../constants/role";
+import { useLocation } from "react-router-dom";
 
 const IdeaList = ({ authenticateReducer, getNewTokenRequest }) => {
   const [pages, setPages] = useState(1);
@@ -16,7 +18,14 @@ const IdeaList = ({ authenticateReducer, getNewTokenRequest }) => {
   const [filterOption, setFilterOption] = useState(filters.MY_IDEA);
   const { token, user } = authenticateReducer;
 
+  const { search } = useLocation();
+  const params = new URLSearchParams(search);
+  const approveValue = params.get("approve");
+
   const getAllIdeas = useCallback(async () => {
+    if (user?.role === roles.MARKETING_COORDINATOR) {
+      setFilterOption(filters.APPROVE);
+    }
     const getAllData = async () => {
       const { data, status } = await getAllIdeaWithFilter(
         filterOption,
@@ -48,6 +57,10 @@ const IdeaList = ({ authenticateReducer, getNewTokenRequest }) => {
     setCurrPage((prev) => prev - 1);
   };
 
+  const handleItemClick = () => {
+    getAllIdeas();
+  };
+
   useEffect(() => {
     getAllIdeas();
   }, [getAllIdeas]);
@@ -62,9 +75,21 @@ const IdeaList = ({ authenticateReducer, getNewTokenRequest }) => {
       <div className="mx-auto">
         <div className="w-full flex items-center justify-between mb-10">
           <h3 className="font-black text-gray-600 text-3xl">
-            My List Ideas and Comments
+          List My Ideas
           </h3>
-          {}
+          {/* <select
+            className="border-none"
+            value={filterOption}
+            onChange={handleFilterChange}
+          >
+            <option value={filters.VIEW}>View</option>
+            <option value={filters.ALPHABET}>Alphabet</option>
+            <option value={filters.DATE_ASC}>Newest</option>
+            <option value={filters.DATE_DESC}>Oldest</option>
+            <option value={filters.POPULAR}>Popular</option>
+            <option value={filters.LIKE}>Upvote</option>
+            <option value={filters.DISLIKE}>Downvote</option>
+          </select> */}
         </div>
         <ul className="px-5 py-2">
           {ideas.map((item, index) => (
@@ -79,6 +104,9 @@ const IdeaList = ({ authenticateReducer, getNewTokenRequest }) => {
               view={item?.viewCount | 0}
               academyId={item.academy?.name}
               magazine={item.magazine?.name}
+              token={token}
+              user={user}
+              onItemClick={handleItemClick}
             />
           ))}
         </ul>
