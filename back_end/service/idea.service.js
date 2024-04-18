@@ -28,7 +28,7 @@ const getAllIdeaWithFilter = async (
   switch (filter) {
     case filterEnum.VIEW:
       return (allIdeaInDB = await IdeaModel.find({})
-        .populate("name")
+        // .populate("name")
         .populate("magazine", "name")
         .populate("academy", "name")
         .sort({ viewCount: -1 })
@@ -36,7 +36,7 @@ const getAllIdeaWithFilter = async (
         .limit(limit));
     case filterEnum.ALPHABET:
       return (allIdeaInDB = await IdeaModel.find({})
-        .populate("name")
+        // .populate("name")
         .populate("magazine", "name")
         .populate("academy", "name")
         .sort({ title: 1 })
@@ -58,7 +58,7 @@ const getAllIdeaWithFilter = async (
         .slice((page - 1) * limit, page * limit));
     case filterEnum.DISLIKE:
       const allPostWithDislike = await IdeaModel.find({})
-        .populate("name")
+        // .populate("name")
         .populate("magazine", "name")
         .populate("academy", "name");
       return (allIdeaInDB = allPostWithDislike
@@ -72,7 +72,7 @@ const getAllIdeaWithFilter = async (
         .slice((page - 1) * limit, page * limit));
     case filterEnum.POPULAR:
       const allPostWithBoth = await IdeaModel.find({})
-        .populate("name")
+        // .populate("name")
         .populate("magazine", "name")
         .populate("academy", "name");
       return (allIdeaInDB = allPostWithBoth
@@ -90,7 +90,7 @@ const getAllIdeaWithFilter = async (
         .slice((page - 1) * limit, page * limit));
     case filterEnum.DATE_ASC:
       return (allIdeaInDB = await IdeaModel.find({})
-        .populate("name")
+        // .populate("name")
         .populate("magazine", "name")
         .populate("academy", "name")
         .sort({ createdAt: -1 })
@@ -98,7 +98,7 @@ const getAllIdeaWithFilter = async (
         .limit(limit));
     case filterEnum.DATE_DESC:
       return (allIdeaInDB = await IdeaModel.find({})
-        .populate("name")
+        // .populate("name")
         .populate("magazine", "name")
         .populate("academy", "name")
         .sort({
@@ -108,7 +108,7 @@ const getAllIdeaWithFilter = async (
         .limit(limit));
     case filterEnum.MY_IDEA:
       return (allIdeaInDB = await IdeaModel.find({ user: id })
-        .populate("name")
+        // .populate("name")
         .populate("magazine", "name")
         .populate("academy", "name")
         .sort({
@@ -118,7 +118,7 @@ const getAllIdeaWithFilter = async (
         .limit(limit));
     default:
       return (allIdeaInDB = await IdeaModel.find({})
-        .populate("name")
+        // .populate("name")
         .populate("magazine", "name")
         .populate("academy", "name")
         .sort({ viewCount: -1 })
@@ -129,7 +129,7 @@ const getAllIdeaWithFilter = async (
 
 const getIdeaById = async (id) => {
   return await IdeaModel.findById(id)
-    .populate("name")
+    // .populate("name")
     .populate("magazine", "name")
     .populate("academy", "name")
     .populate("user", "username fullname department role avatar")
