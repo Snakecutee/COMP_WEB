@@ -34,6 +34,7 @@
     "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0",
     "path": "^0.12.7",
-    "path-scurry": "^1.10.2"
+    "path-scurry": "^1.10.2",
+    "scheduler": "^0.23.0"
   }
 }
