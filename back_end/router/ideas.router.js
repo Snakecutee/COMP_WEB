@@ -22,10 +22,11 @@ const {
   findPostOfDepartment,
   uploadSupportDocument,
   updateIdea,
+  getEndateIdeas,
 } = require("../controller/idea.controller");
 const passport = require("passport");
 const { authorize } = require("../middleware/authorization");
-
+ideaRouter.get("/end-date", getEndateIdeas);
 ideaRouter.use([passport.authenticate("jwt", { session: false }), authorize()]);
 ideaRouter.get("/", getAllIdeas);
 ideaRouter.get("/count", countIdea);

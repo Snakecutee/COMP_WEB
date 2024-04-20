@@ -22,6 +22,11 @@ const magazineSchema = new mongoose.Schema(
       type: Date,
       require: true,
     },
+
+    closureDate: {
+      type: Date,
+      require: true,
+    },
     isDelete: {
       type: Boolean,
       require: true,
