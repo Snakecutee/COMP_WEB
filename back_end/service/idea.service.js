@@ -17,6 +17,8 @@ const filterEnum = {
   DATE_ASC: "DATE_ASC",
   DATE_DESC: "DATE_DESC",
   MY_IDEA: "MY_IDEA",
+  APPROVE: "APPROVE",
+  END_DATE: "END_DATE",
 };
 
 const getAllIdeaWithFilter = async (
@@ -26,27 +28,41 @@ const getAllIdeaWithFilter = async (
   limit = 5
 ) => {
   switch (filter) {
+    case filterEnum.END_DATE:
+      const allIdeaEndDate = await IdeaModel.find({})
+        .populate( "name")
+        .populate("magazine")
+        .populate("academy", "name")
+        .populate("user")
+        .sort({ viewCount: -1 });
+      console.log("dsaasd");
+      return allIdeaEndDate
+        .filter((idea) => new Date(idea.magazine.endDate) < new Date())
+        .slice((page - 1) * limit, page * limit);
     case filterEnum.VIEW:
       return (allIdeaInDB = await IdeaModel.find({})
-        // .populate("name")
-        .populate("magazine", "name")
+        .populate( "name")
+        .populate("magazine")
         .populate("academy", "name")
+        .populate("user")
         .sort({ viewCount: -1 })
         .skip((page - 1) * limit)
         .limit(limit));
     case filterEnum.ALPHABET:
       return (allIdeaInDB = await IdeaModel.find({})
-        // .populate("name")
-        .populate("magazine", "name")
+        .populate( "name")
+        .populate("magazine")
         .populate("academy", "name")
+        .populate("user")
         .sort({ title: 1 })
         .skip((page - 1) * limit)
         .limit(limit));
     case filterEnum.LIKE:
       const allPostWithLike = await IdeaModel.find({})
-        .populate("name")
-        .populate("magazine", "name")
-        .populate("academy", "name");
+        .populate( "name")
+        .populate("magazine")
+        .populate("academy", "name")
+        .populate("user");
       return (allIdeaInDB = allPostWithLike
         .sort(
           (prevIdea, nextIdea) =>
@@ -58,9 +74,10 @@ const getAllIdeaWithFilter = async (
         .slice((page - 1) * limit, page * limit));
     case filterEnum.DISLIKE:
       const allPostWithDislike = await IdeaModel.find({})
-        // .populate("name")
-        .populate("magazine", "name")
-        .populate("academy", "name");
+        .populate( "name")
+        .populate("magazine")
+        .populate("academy", "name")
+        .populate("user");
       return (allIdeaInDB = allPostWithDislike
         .sort(
           (prevIdea, nextIdea) =>
@@ -72,9 +89,10 @@ const getAllIdeaWithFilter = async (
         .slice((page - 1) * limit, page * limit));
     case filterEnum.POPULAR:
       const allPostWithBoth = await IdeaModel.find({})
-        // .populate("name")
-        .populate("magazine", "name")
-        .populate("academy", "name");
+        .populate( "name")
+        .populate("magazine")
+        .populate("academy", "name")
+        .populate("user");
       return (allIdeaInDB = allPostWithBoth
         .sort(
           (prevIdea, nextIdea) =>
@@ -90,17 +108,19 @@ const getAllIdeaWithFilter = async (
         .slice((page - 1) * limit, page * limit));
     case filterEnum.DATE_ASC:
       return (allIdeaInDB = await IdeaModel.find({})
-        // .populate("name")
-        .populate("magazine", "name")
+        .populate( "name")
+        .populate("magazine")
         .populate("academy", "name")
+        .populate("user")
         .sort({ createdAt: -1 })
         .skip((page - 1) * limit)
         .limit(limit));
     case filterEnum.DATE_DESC:
       return (allIdeaInDB = await IdeaModel.find({})
-        // .populate("name")
-        .populate("magazine", "name")
+        .populate("name")
+        .populate("magazine")
         .populate("academy", "name")
+        .populate("user")
         .sort({
           createdAt: 1,
         })
@@ -108,9 +128,21 @@ const getAllIdeaWithFilter = async (
         .limit(limit));
     case filterEnum.MY_IDEA:
       return (allIdeaInDB = await IdeaModel.find({ user: id })
-        // .populate("name")
-        .populate("magazine", "name")
+        .populate( "name")
+        .populate("magazine")
         .populate("academy", "name")
+        .populate("user")
+        .sort({
+          createdAt: 1,
+        })
+        .skip((page - 1) * limit)
+        .limit(limit));
+    case filterEnum.APPROVE:
+      return (allIdeaInDB = await IdeaModel.find({ isApprove: false })
+        .populate("name")
+        .populate("magazine")
+        .populate("academy", "name")
+        .populate("user")
         .sort({
           createdAt: 1,
         })
@@ -118,9 +150,10 @@ const getAllIdeaWithFilter = async (
         .limit(limit));
     default:
       return (allIdeaInDB = await IdeaModel.find({})
-        // .populate("name")
-        .populate("magazine", "name")
+        .populate( "name")
+        .populate("magazine")
         .populate("academy", "name")
+        .populate("user")
         .sort({ viewCount: -1 })
         .skip((page - 1) * limit)
         .limit(limit));
@@ -129,7 +162,7 @@ const getAllIdeaWithFilter = async (
 
 const getIdeaById = async (id) => {
   return await IdeaModel.findById(id)
-    // .populate("name")
+    .populate( "name")
     .populate("magazine", "name")
     .populate("academy", "name")
     .populate("user", "username fullname department role avatar")
@@ -153,13 +186,22 @@ const getIdeaById = async (id) => {
 
 const editIdea = async (id, editIdeaItem) => {
   try {
-    const { title, description, documentLink } = editIdeaItem;
-
-    const idea = await IdeaModel.findOneAndUpdate(
-      { _id: id },
-      { $set: { title, description, documentLink } },
-      { new: true }
-    );
+    const { title, description, documentLink, isApprove } = editIdeaItem;
+    console.log(editIdeaItem);
+    let idea;
+    if (isApprove) {
+      idea = await IdeaModel.findOneAndUpdate(
+        { _id: id },
+        { $set: { isApprove } },
+        { new: true }
+      );
+    } else {
+      idea = await IdeaModel.findOneAndUpdate(
+        { _id: id },
+        { $set: { title, description, documentLink } },
+        { new: true }
+      );
+    }
 
     if (!idea) {
       throw new Error("Idea not found");
@@ -181,9 +223,9 @@ const createIdea = async (
   title,
   description,
   documentLink = "",
-
+  
   userId,
-
+ 
   academy,
   magazineId
 ) => {
@@ -195,10 +237,10 @@ const createIdea = async (
     title,
     description,
     documentLink,
-
+    // category: categoryInDB._id,
     user: findUserIndDeaprtment._id,
     department: findUserIndDeaprtment.department,
-
+    
     academy: academyInDb._id,
     magazine: findMagazineInDb._id,
   });
@@ -216,12 +258,12 @@ const commentToAnIdea = async (
   postId,
   content,
   userId,
-
+  
   origin
 ) => {
   const ideaInDb = await IdeaModel.findById(postId);
   const author = await UserModel.findById(ideaInDb.user);
-  ideaInDb.comments.push({ content, user: userId, });
+  ideaInDb.comments.push({ content, user: userId,  });
   await ideaInDb.save();
 };
 
