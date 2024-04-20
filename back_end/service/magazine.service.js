@@ -3,8 +3,15 @@ const MagazineModel = require("../model/magazine");
 const Department = require("../model/department");
 
 const createMagazine = async (magazine) => {
-  const { startDate, endDate, name, description, department, academy } =
-    magazine;
+  const {
+    startDate,
+    endDate,
+    name,
+    description,
+    closureDate,
+    department,
+    academy,
+  } = magazine;
 
   if (startDate === "" && endDate === "" && name === "" && closureDate === "") {
     throw new Error("StartDate, EndDate, Name and ClosureDate is required");
@@ -14,6 +21,15 @@ const createMagazine = async (magazine) => {
   if (new Date(startDate).getTime() > new Date(endDate).getTime()) {
     throw new Error("EndDate need after start date");
     return;
+  }
+
+  if (
+    !(
+      new Date(startDate).getTime() < new Date(closureDate).getTime() &&
+      new Date(closureDate).getTime() < new Date(endDate).getTime()
+    )
+  ) {
+    throw new Error("Closure date need after start date and befor end date");
   }
   const academyInDb = await AcademicYear.findOne({ name: academy });
   const departmentInDb = await Department.findOne({ name: department });
@@ -29,16 +45,24 @@ const createMagazine = async (magazine) => {
 };
 
 const updateMagazine = async (magazine) => {
-  const { id, startDate, endDate, name, description, department, academy } =
-    magazine;
-  console.log("magazine", magazine);
+  const {
+    id,
+    startDate,
+    endDate,
+    name,
+    description,
+    department,
+    closureDate,
+    academy,
+  } = magazine;
   if (
     !startDate ||
     !endDate ||
     !name ||
     !description ||
     !department ||
-    !academy
+    !academy ||
+    !closureDate
   ) {
     throw new Error(
       "All fields (StartDate, EndDate, Name, Description, Department, Academy) are required"
@@ -58,6 +82,18 @@ const updateMagazine = async (magazine) => {
   if (!departmentInDb) {
     throw new Error(`Department with name ${department} not found`);
   }
+  if (
+    !(
+      new Date(startDate).getTime() < new Date(closureDate).getTime() &&
+      new Date(closureDate).getTime() < new Date(endDate).getTime()
+    )
+  ) {
+    throw new Error("Closure date need after start date and befor end date");
+  }
+  const exisitedMagazine = await getById(id);
+  if (exisitedMagazine && new Date(exisitedMagazine.endDate) < new Date()) {
+    throw new Error(`Magazine is end of day cannot update`);
+  }
 
   const updatedMagazine = await MagazineModel.findOneAndUpdate(
     { _id: id },
@@ -68,6 +104,7 @@ const updateMagazine = async (magazine) => {
       description: description,
       department: departmentInDb._id,
       academy: academyInDb._id,
+      closureDate: closureDate,
     },
     { new: true }
   );
