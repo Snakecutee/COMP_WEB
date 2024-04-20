@@ -17,9 +17,16 @@ const {
 
 const getAllIdeas = async (req, res) => {
   const { filter, page } = req.query;
-  const id = req.user._id;
+  const id = req.user?._id;
   const pages = await countAllIdeas();
   const allIdeas = await getAllIdeaWithFilter(id, filter, page);
+  res.status(200).json({ pages, data: allIdeas });
+};
+
+const getEndateIdeas = async (req, res) => {
+  const { filter, page } = req.query;
+  const pages = await countAllIdeas();
+  const allIdeas = await getAllIdeaWithFilter(null, filter, page);
   res.status(200).json({ pages, data: allIdeas });
 };
 
@@ -40,7 +47,7 @@ const commentToIdea = async (req, res) => {
   const { id } = req.params;
   const origin = req.get("origin");
 
-  await commentToAnIdea(id, content, userId, origin);
+  await commentToAnIdea(id, content, userId,  origin);
   res.status(201).json({ message: "comment success" });
 };
 const reactionToIdea = async (req, res) => {
@@ -69,7 +76,7 @@ const createIdeaWithDocument = async (req, res) => {
     documentLink,
     
     userId,
-    
+   
     academy,
     magazineId
   );
@@ -121,4 +128,5 @@ module.exports = {
   countIdeaOfDepartment,
   findPostOfDepartment,
   uploadSupportDocument,
+  getEndateIdeas,
 };
