@@ -3,7 +3,6 @@ const mongoose = require("mongoose");
 const ReactionSchema = new mongoose.Schema(
   {
     user: { type: mongoose.Types.ObjectId, ref: "Users" },
-    reactionType: { type: String, enum: ["Like", "Dislike"] },
   },
   {
     timestamps: true,
