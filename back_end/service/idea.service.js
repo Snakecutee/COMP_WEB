@@ -11,8 +11,8 @@ const MagazineModel = require("../model/magazine");
 const filterEnum = {
   VIEW: "VIEW",
   ALPHABET: "ALPHABET",
-  LIKE: "LIKE",
-  DISLIKE: "DISLIKE",
+  // LIKE: "LIKE",
+  // DISLIKE: "DISLIKE",
   POPULAR: "POPULAR",
   DATE_ASC: "DATE_ASC",
   DATE_DESC: "DATE_DESC",
@@ -57,36 +57,36 @@ const getAllIdeaWithFilter = async (
         .sort({ title: 1 })
         .skip((page - 1) * limit)
         .limit(limit));
-    case filterEnum.LIKE:
-      const allPostWithLike = await IdeaModel.find({})
-        .populate( "name")
-        .populate("magazine")
-        .populate("academy", "name")
-        .populate("user");
-      return (allIdeaInDB = allPostWithLike
-        .sort(
-          (prevIdea, nextIdea) =>
-            nextIdea.reactions.filter((item) => item.reactionType === "Like")
-              .length -
-            prevIdea.reactions.filter((item) => item.reactionType === "Like")
-              .length
-        )
-        .slice((page - 1) * limit, page * limit));
-    case filterEnum.DISLIKE:
-      const allPostWithDislike = await IdeaModel.find({})
-        .populate( "name")
-        .populate("magazine")
-        .populate("academy", "name")
-        .populate("user");
-      return (allIdeaInDB = allPostWithDislike
-        .sort(
-          (prevIdea, nextIdea) =>
-            nextIdea.reactions.filter((item) => item.reactionType === "Dislike")
-              .length -
-            prevIdea.reactions.filter((item) => item.reactionType === "Dislike")
-              .length
-        )
-        .slice((page - 1) * limit, page * limit));
+    // case filterEnum.LIKE:
+    //   const allPostWithLike = await IdeaModel.find({})
+    //     .populate( "name")
+    //     .populate("magazine")
+    //     .populate("academy", "name")
+    //     .populate("user");
+    //   return (allIdeaInDB = allPostWithLike
+    //     .sort(
+    //       (prevIdea, nextIdea) =>
+    //         nextIdea.reactions.filter((item) => item.reactionType === "Like")
+    //           .length -
+    //         prevIdea.reactions.filter((item) => item.reactionType === "Like")
+    //           .length
+    //     )
+    //     .slice((page - 1) * limit, page * limit));
+    // case filterEnum.DISLIKE:
+    //   const allPostWithDislike = await IdeaModel.find({})
+    //     .populate( "name")
+    //     .populate("magazine")
+    //     .populate("academy", "name")
+    //     .populate("user");
+    //   return (allIdeaInDB = allPostWithDislike
+    //     .sort(
+    //       (prevIdea, nextIdea) =>
+    //         nextIdea.reactions.filter((item) => item.reactionType === "Dislike")
+    //           .length -
+    //         prevIdea.reactions.filter((item) => item.reactionType === "Dislike")
+    //           .length
+    //     )
+    //     .slice((page - 1) * limit, page * limit));
     case filterEnum.POPULAR:
       const allPostWithBoth = await IdeaModel.find({})
         .populate( "name")

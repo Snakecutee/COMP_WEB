@@ -29,10 +29,10 @@ import CommentItem from "../components/commentItem";
 import { date } from "yup/lib/locale";
 import { roles } from "../constants/role";
 
-const reactionType = {
-  LIKE: "Like",
-  DISLIKE: "Dislike",
-};
+// const reactionType = {
+//   LIKE: "Like",
+//   DISLIKE: "Dislike",
+// };
 
 const IdeaDetail = ({ authenticateReducer, getNewTokenRequest }) => {
   const [ideaDetail, setIdeaDetail] = useState({});
