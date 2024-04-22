@@ -7,6 +7,9 @@ import Button from "../../components/button";
 import { IdentificationIcon } from "@heroicons/react/solid";
 import IdeaItem from "../../components/IdeaItem";
 import { roles } from "../../constants/role";
+import { toast } from "react-toastify";
+import JSZip from "jszip";
+import FileSaver from "file-saver";
 const MagazineDatailPage = ({ getNewTokenRequest, authenticateReducer }) => {
   const [magazineDetail, setMagazineDetail] = useState({});
   const { token, user } = authenticateReducer;
@@ -17,12 +20,52 @@ const MagazineDatailPage = ({ getNewTokenRequest, authenticateReducer }) => {
       const { data, status } = await getMagazineById(token, id);
       if (status === 200) {
         setMagazineDetail(data);
+        console.log(data);
       }
     }
   }, [id, token, user._id]);
   useEffect(() => {
     getMegazineDetail();
   }, [getMegazineDetail]);
+  const handleAsign = () => {
+    const endDate = new Date(magazineDetail.closureDate);
+    const currentDate = new Date();
+    if (endDate < currentDate) {
+      toast.error(
+        "Due to its outdated nature, the magazine cannot introduce new ideas."
+      );
+      return;
+    }
+    navigate(`/contribute?magazineId=${magazineDetail._id}`);
+  };
+
+  const handleDownload = async () => {
+    const zip = new JSZip();
+    let fileUrls = [];
+
+
+    magazineDetail?.ideas
+      ?.filter((idea) => idea.isApprove)
+      .map((idea) =>
+        idea.documentLink.map((d, index) =>
+          fileUrls.push({ name: `${idea.title}-${index}`, url: d })
+        )
+      );
+    const fetchPromises = fileUrls.map(async (item, index) => {
+      const response = await fetch(item.url);
+      const blob = await response.blob();
+      console.log(`${item.name}-${index}.doc`);
+      zip.file(`${item.name}-${index}.doc`, blob);
+    });
+
+    await Promise.all(fetchPromises);
+
+    // Generate the zip file
+    zip.generateAsync({ type: "blob" }).then((content) => {
+      // Save the zip file
+      FileSaver.saveAs(content, `${magazineDetail.name}.zip`);
+    });
+  };
   return (
     magazineDetail && (
       <>
@@ -34,9 +77,15 @@ const MagazineDatailPage = ({ getNewTokenRequest, authenticateReducer }) => {
                 icon={IdentificationIcon}
                 type="primary"
                 title="Assign"
-                onClick={(e) =>
-                  navigate(`/contribute?magazineId=${magazineDetail._id}`)
-                }
+                onClick={handleAsign}
+              />
+            )}
+            {user?.role === roles.MARKETING_MANAGER && (
+              <Button
+                icon={IdentificationIcon}
+                type="primary"
+                title="Download All"
+                onClick={handleDownload}
               />
             )}
           </div>
@@ -51,6 +100,12 @@ const MagazineDatailPage = ({ getNewTokenRequest, authenticateReducer }) => {
               {new Date(magazineDetail.endDate).toLocaleDateString("en-US")}
             </span>
           </div>
+          <div className="text-gray-500 text-xs flex">
+            <span className="inline-block">
+              Closure Date:{" "}
+              {new Date(magazineDetail.closureDate).toLocaleDateString("en-US")}
+            </span>
+          </div>
           <p className="text-gray-800 text-sm my-2 leading-normal md:leading-relaxed">
             {magazineDetail.description}
           </p>
@@ -59,21 +114,24 @@ const MagazineDatailPage = ({ getNewTokenRequest, authenticateReducer }) => {
           <div className="w-full px-2 max-h-96 overflow-y-auto">
             <ul className="px-5 py-2">
               {magazineDetail.ideas &&
-                magazineDetail.ideas.map((idea) => (
-                  <IdeaItem
-                    title={idea.title}
-                    description={idea.description}
-                    key={idea._id}
-                    id={idea._id}
-                    date={idea.createdAt}
-                    commentCount={idea.comments.length}
-                    like={idea.reactions.length}
-                    view={idea?.viewCount | 0}
-                    academyId={idea.academy}
-                    authenticateReducer={authenticateReducer}
-                    getNewTokenRequest={getNewTokenRequest}
-                  />
-                ))}
+                magazineDetail?.ideas.map(
+                  (idea) =>
+                    idea.isApprove && (
+                      <IdeaItem
+                        title={idea.title}
+                        description={idea.description}
+                        key={idea._id}
+                        id={idea._id}
+                        date={idea.createdAt}
+                        commentCount={idea.comments.length}
+                        like={idea.reactions.length}
+                        view={idea?.viewCount | 0}
+                        academyId={idea.academy}
+                        authenticateReducer={authenticateReducer}
+                        getNewTokenRequest={getNewTokenRequest}
+                      />
+                    )
+                )}
             </ul>
           </div>
         </div>

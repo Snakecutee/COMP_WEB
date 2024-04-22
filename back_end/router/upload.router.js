@@ -26,7 +26,7 @@ const uploader = multer({
   fileFilter: fileFilter,
 });
 
-upload.post("/", uploader.single("file"), (req, res, next) => {
+upload.post("/", uploader.single("image"), (req, res, next) => {
   console.log("day la req.file", req.file);
   if (!req.file) {
     return res.status(400).json({ error: "No file uploaded" });

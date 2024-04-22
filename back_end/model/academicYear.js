@@ -14,10 +14,6 @@ const academicYearSchema = new mongoose.Schema({
     type: Date,
     require: true,
   },
-  closureDate: {
-    type: Date,
-    require: true,
-  },
   endDate: {
     type: Date,
     require: true,

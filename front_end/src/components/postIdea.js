@@ -6,7 +6,6 @@ import ClassicEditor from "ckeditor5-custom-build/build/ckeditor";
 import "../customLibStyle/ckeditor.css";
 import {
   tokenRequestInterceptor,
-  getCategory,
   createIdea,
   uploadSupportDocument,
   uploadEditorContent,

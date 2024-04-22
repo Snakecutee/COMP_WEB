@@ -128,8 +128,7 @@ const EditIdea = ({ authenticateReducer, getNewTokenRequest }) => {
     defaultValues: {
       title: "",
       description: "",
-     
-      isAnonymous: false,
+  
     },
   });
 
@@ -189,6 +188,16 @@ const EditIdea = ({ authenticateReducer, getNewTokenRequest }) => {
       documentLink,
       magazineId: magazineId,
     };
+
+    const endDate = new Date(magazineDetail.endDate);
+    const currentDate = new Date();
+    if (endDate < currentDate) {
+      toast.error(
+        "Due to its outdated nature, the magazine cannot update idea."
+      );
+      return;
+    }
+
     const uploadIdea = await updateIdea(ideaSubmitBody, id, token);
     if (uploadIdea.status === 201) {
       toast.success(uploadIdea.data.message);
@@ -197,7 +206,7 @@ const EditIdea = ({ authenticateReducer, getNewTokenRequest }) => {
       setEditorData("");
       setIsLoading(false);
       setAgree(false);
-      navigate("/student-idea");
+      navigate("/");
     }
   };
 

@@ -22,10 +22,33 @@ const {
   findPostOfDepartment,
   uploadSupportDocument,
   updateIdea,
+  getEndateIdeas,
+  statisticsIdeas,
+  statisticsUsers,
 } = require("../controller/idea.controller");
 const passport = require("passport");
 const { authorize } = require("../middleware/authorization");
+ideaRouter.get(
+  "/end-date",
 
+  getEndateIdeas
+);
+ideaRouter.get(
+  "/statistics",
+  [
+    passport.authenticate("jwt", { session: false }),
+    authorize([process.env.MARKETINGMANAGER]),
+  ],
+  statisticsIdeas
+);
+ideaRouter.get(
+  "/statistics-user",
+  [
+    passport.authenticate("jwt", { session: false }),
+    authorize([process.env.MARKETINGMANAGER]),
+  ],
+  statisticsUsers
+);
 ideaRouter.use([passport.authenticate("jwt", { session: false }), authorize()]);
 ideaRouter.get("/", getAllIdeas);
 ideaRouter.get("/count", countIdea);

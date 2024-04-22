@@ -27,10 +27,5 @@ academicRouter.get(
   academicController.getById
 );
 
-// academicRouter.get(
-//   "/report/mailer",
-//   authorize(process.env.QAMANAGER),
-//   academicController.sendToQA
-// );
 
 module.exports = academicRouter;

@@ -28,11 +28,11 @@ const SideBar = ({
   const navigate = useNavigate();
   const location = useLocation();
   const { token, user } = authenticateReducer;
-  const { departmentRouters } = subRouterReducer;
+
 
   const [departmentToggle, setDepartmentToggle] = useState(false);
 
-  
+ 
 
   const [open, setOpen] = useState(false);
   const [userId, setUserId] = useState("");
@@ -43,7 +43,7 @@ const SideBar = ({
   };
 
   const handleCateToggle = (e) => {
-   
+
     setDepartmentToggle(false);
   };
 
@@ -96,15 +96,55 @@ const SideBar = ({
                     <div className="flex items-center">
                       <UserIcon className="text-gray-500 w-5 h-5" />
                       <span className="hidden md:inline-block ml-3">
-                        Manager Ideas
+                        Manager Idea
                       </span>
                     </div>
                   </Link>
                 </li>
               </>
             )}
-            {user?.role !== roles.ADMIN && (
+
+{user?.role === roles.MARKETING_COORDINATOR && (
               <>
+                <li className="w-full">
+                  <Link
+                    to="/magazines"
+                    className={`flex items-center p-2 text-base justify-between font-normal ${
+                      location.pathname === "/magazines"
+                        ? "bg-gray-700 dark:bg-gray-900"
+                        : "bg-inherit"
+                    } rounded-lg text-white hover:bg-gray-100 dark:hover:bg-gray-700`}
+                  >
+                    <div className="flex items-center">
+                      <DocumentDuplicateIcon className="text-gray-500 w-5 h-5" />
+                      <span className="hidden md:inline-block ml-3">
+                        Manager Magazine
+                      </span>
+                    </div>
+                  </Link>
+                </li>
+              </>
+            )}
+
+            {user?.role === roles.MARKETING_MANAGER && (
+              <>
+                <li className="w-full">
+                  <Link
+                    to="/"
+                    className={`flex items-center p-2 text-base justify-between font-normal ${
+                      location.pathname === "/"
+                        ? "bg-gray-700 dark:bg-gray-900"
+                        : "bg-inherit"
+                    } rounded-lg text-white hover:bg-gray-100 dark:hover:bg-gray-700`}
+                  >
+                    <div className="flex items-center">
+                      <ChartPieIcon className="text-gray-500 w-5 h-5" />
+                      <span className="hidden md:inline-block ml-3">
+                        Dash Board 
+                      </span>
+                    </div>
+                  </Link>
+                </li>
                 <li className="w-full">
                   <Link
                     to="/magazines"
@@ -139,7 +179,7 @@ const SideBar = ({
                     <div className="flex items-center">
                       <UserIcon className="text-gray-500 w-5 h-5" />
                       <span className="hidden md:inline-block ml-3">
-                        Manager Accounts
+                        Manager Account
                       </span>
                     </div>
                   </Link>

@@ -4,25 +4,15 @@ const fs = require("fs");
 const archiver = require("archiver");
 
 const createAcademicYear = async (academicYear) => {
-  const { startDate, endDate, name, closureDate, description } = academicYear;
+  const { startDate, endDate, name, description } = academicYear;
 
-  if (startDate === "" && endDate === "" && name === "" && closureDate === "") {
+  if (startDate === "" && endDate === "" && name === "") {
     throw new Error("StartDate, EndDate, Name and ClosureDate is required");
     return;
   }
 
   if (new Date(startDate).getTime() > new Date(endDate).getTime()) {
     throw new Error("EndDate need after start date");
-    return;
-  }
-
-  if (
-    !(
-      new Date(startDate).getTime() < new Date(closureDate).getTime() &&
-      new Date(closureDate).getTime() < new Date(endDate).getTime()
-    )
-  ) {
-    throw new Error("Closure date need after start date and befor end date");
     return;
   }
 
@@ -50,7 +40,7 @@ const getAcademicYearById = async (id) => {
 };
 
 const updateAcademicYear = async (id, academicYear) => {
-  const { startDate, endDate, name, closureDate, description } = academicYear;
+  const { startDate, endDate, name, description } = academicYear;
 
   var academicYearDb = AcademicYear.findById(id);
   if (!academicYearDb) {
@@ -58,23 +48,8 @@ const updateAcademicYear = async (id, academicYear) => {
     return;
   }
 
-  if (startDate === "" && endDate === "" && name === "" && closureDate === "") {
-    throw new Error("StartDate, EndDate, Name and ClosureDate is required");
-    return;
-  }
-
   if (new Date(startDate).getTime() > new Date(endDate).getTime()) {
     throw new Error("EndDate need after start date");
-    return;
-  }
-
-  if (
-    !(
-      new Date(startDate).getTime() < new Date(closureDate).getTime() &&
-      new Date(closureDate).getTime() < new Date(endDate).getTime()
-    )
-  ) {
-    throw new Error("Closure date need after start date and befor end date");
     return;
   }
 
@@ -89,7 +64,6 @@ const updateAcademicYear = async (id, academicYear) => {
       startDate,
       endDate,
       name,
-      closureDate,
       description,
     });
   }
@@ -117,21 +91,58 @@ const archiveAllDocuments = async () => {
 };
 
 const exportCsvFromDb = async () => {
-  const allIdeaInDb = await Idea.find({  }).populate(
-    
-    "name"
-  );
+  const allIdeaInDb = await Idea.find({ isAnonymous: false })
+
   const jsonToParse = allIdeaInDb.map((idea) => ({
     Title: idea.title,
     Description: idea.description,
-  
+
     Comments: idea.comments.length,
     "Total Reactions": idea.reactions.length,
   }));
   return jsonToParse;
 };
 
+const anonymousIdeas = async () => {
+  const ideaInDB = await Idea.find({ isAnonymous: true })
+   
+    .populate("user", "fullname username department");
+  const jsonToParse = ideaInDB.map((idea) => ({
+    Title: idea.title,
+    Description: idea.description,
+    Comments: idea.comments.length,
+    "Total Reactions": idea.reactions.length,
+    author: idea.user.fullname,
+    username: idea.user.username,
+    department: idea.user.department,
+  }));
+  return jsonToParse;
+};
 
+const anonymousComments = async () => {
+  const allIdea = await Idea.find({}).populate({
+    path: "comments",
+    populate: {
+      path: "user",
+      model: "Users",
+      select: "username fullname department",
+    },
+  });
+  const allAnonymousComments = allIdea
+    .map((idea) =>
+      idea.comments
+        .filter((comment) => comment.isAnonymous === true)
+        .map((item) => ({
+          Username: item.user.username,
+          "Full name": item.user.fullname,
+          Department: item.user.department,
+          "Post ID": idea._id.toString(),
+          "Post title": idea.title,
+        }))
+    )
+    .flat();
+  return allAnonymousComments;
+};
 
 const deleteAcademy = async (id) => {
   const updatedAcademy = await AcademicYear.findOneAndUpdate(
