@@ -32,10 +32,6 @@ import JSZip from "jszip";
 import FileSaver from "file-saver";
 import { IdentificationIcon } from "@heroicons/react/solid";
 
-const reactionType = {
-  LIKE: "Like",
-  DISLIKE: "Dislike",
-};
 
 const IdeaDetail = ({ authenticateReducer, getNewTokenRequest }) => {
   const [ideaDetail, setIdeaDetail] = useState({});

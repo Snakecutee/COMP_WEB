@@ -63,6 +63,7 @@ const getAllIdeaWithFilter = async (
         .populate("magazine")
         .populate("academy", "name")
         .populate("user")
+        .populate("user")
         .sort({ createdAt: -1 })
         .skip((page - 1) * limit)
         .limit(limit));
@@ -71,6 +72,7 @@ const getAllIdeaWithFilter = async (
        
         .populate("magazine")
         .populate("academy", "name")
+        .populate("user")
         .populate("user")
         .sort({
           createdAt: 1,

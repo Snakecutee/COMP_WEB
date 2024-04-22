@@ -19,7 +19,7 @@ const {
 
 const getAllIdeas = async (req, res) => {
   const { filter, page } = req.query;
-  const id = req.user?._id;
+  const id = req.user??._id;
   const pages = await countAllIdeas();
   const allIdeas = await getAllIdeaWithFilter(id, filter, page);
   res.status(200).json({ pages, data: allIdeas });
@@ -49,7 +49,7 @@ const commentToIdea = async (req, res) => {
   const { id } = req.params;
   const origin = req.get("origin");
 
-  await commentToAnIdea(id, content, userId, origin);
+  await commentToAnIdea(id, content, userId,  origin);
   res.status(201).json({ message: "comment success" });
 };
 const reactionToIdea = async (req, res) => {

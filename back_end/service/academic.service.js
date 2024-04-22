@@ -5,7 +5,9 @@ const archiver = require("archiver");
 
 const createAcademicYear = async (academicYear) => {
   const { startDate, endDate, name, description } = academicYear;
+  const { startDate, endDate, name, description } = academicYear;
 
+  if (startDate === "" && endDate === "" && name === "") {
   if (startDate === "" && endDate === "" && name === "") {
     throw new Error("StartDate, EndDate, Name and ClosureDate is required");
     return;
