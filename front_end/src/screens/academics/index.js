@@ -29,7 +29,6 @@ const academicTableHead = [
   "Name",
   "Description",
   "StartDate",
-  "ClosureDate",
   "EndDate",
   "Actions",
 ];
@@ -47,7 +46,6 @@ const errorInitial = {
   description: "",
   startDate: "",
   endDate: "",
-  closureDate: "",
   description: "",
 };
 
@@ -60,7 +58,6 @@ const AcademicPage = ({ getNewTokenRequest, token }) => {
   const [description, setDescription] = useState("");
 
   const [editAcademicYearId, setEditAcademicYearId] = useState("");
-  const [closureDate, setClosureDate] = useState(new Date());
   const [errors, setErrors] = useState(errorInitial);
 
   useEffect(() => {
@@ -100,13 +97,6 @@ const AcademicPage = ({ getNewTokenRequest, token }) => {
       new Date(date[0].endDate).getTime()
         ? ""
         : "EndDate need after start date";
-    temp.closureDate =
-      closureDate !== undefined ? "" : "This field is required";
-    temp.closureDate =
-      new Date(date[0].startDate).getTime() < new Date(closureDate).getTime() &&
-      new Date(closureDate).getTime() < new Date(date[0].endDate).getTime()
-        ? ""
-        : "Closure date need after start date and befor end date";
 
     setErrors({ ...temp });
     return Object.values(temp).every((x) => x === "");
@@ -122,7 +112,6 @@ const AcademicPage = ({ getNewTokenRequest, token }) => {
             startDate: date[0].startDate,
             endDate: date[0].endDate,
             description: description,
-            closureDate: closureDate,
           },
           token
         );
@@ -137,7 +126,6 @@ const AcademicPage = ({ getNewTokenRequest, token }) => {
         setName("");
         setDescription("");
         setDate(dateInitial);
-        setClosureDate(new Date());
         setOpenAcademy(false);
         setErrors(errorInitial);
         loadAcademy();
@@ -157,7 +145,6 @@ const AcademicPage = ({ getNewTokenRequest, token }) => {
             description: description,
             startDate: date[0].startDate,
             endDate: date[0].endDate,
-            closureDate: closureDate,
           },
           editAcademicYearId,
           token
@@ -173,7 +160,6 @@ const AcademicPage = ({ getNewTokenRequest, token }) => {
         setName("");
         setDescription("");
         setDate(dateInitial);
-        setClosureDate(new Date());
         setOpenUpdateAcademy(false);
         setErrors(errorInitial);
         loadAcademy();
@@ -206,7 +192,6 @@ const AcademicPage = ({ getNewTokenRequest, token }) => {
       if (status === 200) {
         setName(data.name);
         setDescription(data.description);
-        setClosureDate(new Date(data.closureDate));
 
         const date = [
           {
@@ -265,9 +250,7 @@ const AcademicPage = ({ getNewTokenRequest, token }) => {
       <td className="p-2 whitespace-nowrap">
         <div className="text-left">{dateFormatter(item.startDate)}</div>
       </td>
-      <td className="p-2 whitespace-nowrap">
-        <div className="text-left">{dateFormatter(item.closureDate)}</div>
-      </td>
+
       <td className="p-2 whitespace-nowrap">
         <div className="text-left">{dateFormatter(item.endDate)}</div>
       </td>
@@ -330,14 +313,7 @@ const AcademicPage = ({ getNewTokenRequest, token }) => {
             {errors.endDate.length > 0 && (
               <ErrorMessageCustom message={errors.endDate} />
             )}
-            <label className="mr-auto text-xl text-900">Closure Date</label>
-            <DateTimePicker
-              value={closureDate.toLocaleDateString("en-CA")}
-              onChange={(e) => setClosureDate(new Date(e.target.value))}
-            />
-            {errors.closureDate.length > 0 && (
-              <ErrorMessageCustom message={errors.closureDate} />
-            )}
+
             <Button
               onClick={handleSubmit}
               role="submit"
@@ -373,14 +349,7 @@ const AcademicPage = ({ getNewTokenRequest, token }) => {
           {errors.endDate.length > 0 && (
             <ErrorMessageCustom message={errors.endDate} />
           )}
-          <label className="mr-auto text-xl text-900">Closure Date</label>
-          <DateTimePicker
-            value={closureDate.toLocaleDateString("en-CA")}
-            onChange={(e) => setClosureDate(new Date(e.target.value))}
-          />
-          {errors.closureDate.length > 0 && (
-            <ErrorMessageCustom message={errors.closureDate} />
-          )}
+
           <Button
             onClick={handleUpdateSubmit}
             role="submit"

@@ -59,21 +59,26 @@ const updateUser = async (id, updateAccount) => {
     throw new Error("Password and confirm password is not match");
   } else {
     try {
-      var encryptedPassword = CryptoJS.AES.encrypt(
-        password,
-        process.env.ENCRYPT_KEY
-      ).toString();
-      await User.findByIdAndUpdate(id, {
-        fullname: fullname,
-       
-        dateOfBirth: dateOfBirth,
-        address: address,
-        age: age,
-        gender: gender,
-        avatar: avatar,
-        role: role,
-        department: department,
-      });
+      if (password && confirmPassword) {
+        var encryptedPassword = CryptoJS.AES.encrypt(
+          password,
+          process.env.ENCRYPT_KEY
+        ).toString();
+        await User.findByIdAndUpdate(id, {
+          password: encryptedPassword,
+        });
+      } else {
+        await User.findByIdAndUpdate(id, {
+          fullname: fullname,
+          dateOfBirth: dateOfBirth,
+          address: address,
+          age: age,
+          gender: gender,
+          avatar: avatar,
+          role: role,
+          department: department,
+        });
+      }
     } catch (error) {
       if (error.name === "ValidationError") {
         let errors = {};

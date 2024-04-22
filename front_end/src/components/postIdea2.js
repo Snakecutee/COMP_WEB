@@ -6,7 +6,6 @@ import ClassicEditor from "ckeditor5-custom-build/build/ckeditor";
 import "../customLibStyle/ckeditor.css";
 import {
   tokenRequestInterceptor,
-  
   createIdea,
   uploadSupportDocument,
   uploadEditorContent,
@@ -79,8 +78,6 @@ const PostIdea = ({ authenticateReducer, getNewTokenRequest }) => {
     defaultValues: {
       title: "",
       description: "",
-    
-      
     },
   });
 
@@ -108,7 +105,7 @@ const PostIdea = ({ authenticateReducer, getNewTokenRequest }) => {
     getAcademicYear();
   }, [getAcademicYear]);
 
-  
+
 
   const handleSwitch = (e) => {
     e.preventDefault();
@@ -148,6 +145,14 @@ const PostIdea = ({ authenticateReducer, getNewTokenRequest }) => {
   const submitIdeaHandler = async (formData) => {
     setLoading(true);
     let documentLink = [];
+    const endDate = new Date(magazineDetail.closureDate);
+    const currentDate = new Date();
+    if (endDate < currentDate) {
+      toast.error(
+        "Due to its outdated nature, the magazine cannot introduce new ideas."
+      );
+      return;
+    }
     if (file.length > 0) {
       for (const fileItem of file) {
         const documentUpload = new FormData();
@@ -224,7 +229,6 @@ const PostIdea = ({ authenticateReducer, getNewTokenRequest }) => {
             <Form title="Contribute Idea">
               <div className="w-full text-center">{magazineDetail.name}</div>
               <div className="w-full flex justify-end">
-                
                 <Button
                   type={switchUpload ? `primary` : `success`}
                   onClick={handleSwitch}

@@ -36,27 +36,27 @@ db.seedData = async () => {
         fullname: "Administrator",
         dateOfBirth: new Date(),
         email: "admin123@gmail.com",
-        address: "122 ham nghi",
+        address: "Da Nang",
         age: 21,
         gender: "Male",
         role: process.env.ADMIN,
       });
       await admin.save();
       const userTest1 = await new User({
-        avatar: "statics/images/admin.png",
+        avatar: "statics/images/avatar.png",
         username: "marketingmanager@gmail.com",
         password: "123456",
         fullname: "marketing Manager",
         email: "markertingmanager@gmail.com",
         dateOfBirth: new Date(),
         age: 21,
-        address: "122 ham nghi",
+        address: "Da Nang",
         gender: "Male",
         role: process.env.MARKETINGMANAGER,
       });
       await userTest1.save();
       const userTest2 = await new User({
-        avatar: "statics/images/admin.png",
+        avatar: "statics/images/avatar.png",
         username: "marketingcoordinator",
         password: "123456",
         fullname: "marketing Coordinator",
@@ -65,7 +65,7 @@ db.seedData = async () => {
         dateOfBirth: new Date(),
         age: 21,
         gender: "Male",
-        address: "122 ham nghi",
+        address: "Da Nang",
         role: process.env.MARKETINGCOORDINATOR,
       });
       await userTest2.save();
@@ -73,12 +73,12 @@ db.seedData = async () => {
         avatar: "statics/images/avatar.png",
         username: "STUDENT",
         password: "123456",
-        fullname: "STUDENT",
+        fullname: "student",
         email: "STUDENT@gmail.com",
         dateOfBirth: new Date(),
         age: 21,
         gender: "Male",
-        address: "122 ham nghi",
+        address: "Da Nang",
         role: process.env.STUDENT,
       });
       await userTest3.save();

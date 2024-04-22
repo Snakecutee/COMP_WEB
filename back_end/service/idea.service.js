@@ -1,9 +1,8 @@
 const IdeaModel = require("../model/idea");
 
 const UserModel = require("../model/user");
-
 const DepartmentModel = require("../model/department");
-const AcademicYearModel = require("../model/academicYear");
+const AcademicYear = require("../model/academicYear");
 const fs = require("fs");
 const { uploadDocument } = require("../processes/cloudinary");
 const MagazineModel = require("../model/magazine");
@@ -11,6 +10,8 @@ const MagazineModel = require("../model/magazine");
 const filterEnum = {
   VIEW: "VIEW",
   ALPHABET: "ALPHABET",
+  // LIKE: "LIKE",
+  // DISLIKE: "DISLIKE",
   POPULAR: "POPULAR",
   DATE_ASC: "DATE_ASC",
   DATE_DESC: "DATE_DESC",
@@ -28,7 +29,7 @@ const getAllIdeaWithFilter = async (
   switch (filter) {
     case filterEnum.END_DATE:
       const allIdeaEndDate = await IdeaModel.find({})
-        .populate( "name")
+       
         .populate("magazine")
         .populate("academy", "name")
         .populate("user")
@@ -39,7 +40,7 @@ const getAllIdeaWithFilter = async (
         .slice((page - 1) * limit, page * limit);
     case filterEnum.VIEW:
       return (allIdeaInDB = await IdeaModel.find({})
-        .populate( "name")
+       
         .populate("magazine")
         .populate("academy", "name")
         .populate("user")
@@ -48,46 +49,30 @@ const getAllIdeaWithFilter = async (
         .limit(limit));
     case filterEnum.ALPHABET:
       return (allIdeaInDB = await IdeaModel.find({})
-        .populate( "name")
+      
         .populate("magazine")
         .populate("academy", "name")
         .populate("user")
         .sort({ title: 1 })
         .skip((page - 1) * limit)
         .limit(limit));
-    case filterEnum.POPULAR:
-      const allPostWithBoth = await IdeaModel.find({})
-        .populate( "name")
-        .populate("magazine")
-        .populate("academy", "name")
-        .populate("user");
-      return (allIdeaInDB = allPostWithBoth
-        .sort(
-          (prevIdea, nextIdea) =>
-            nextIdea.reactions.filter((item) => item.reactionType === "Like")
-              .length -
-            nextIdea.reactions.filter((item) => item.reactionType === "Dislike")
-              .length -
-            prevIdea.reactions.filter((item) => item.reactionType === "Like")
-              .length +
-            prevIdea.reactions.filter((item) => item.reactionType === "Dislike")
-              .length
-        )
-        .slice((page - 1) * limit, page * limit));
+   
     case filterEnum.DATE_ASC:
       return (allIdeaInDB = await IdeaModel.find({})
-        .populate( "name")
+       
         .populate("magazine")
         .populate("academy", "name")
+        .populate("user")
         .populate("user")
         .sort({ createdAt: -1 })
         .skip((page - 1) * limit)
         .limit(limit));
     case filterEnum.DATE_DESC:
       return (allIdeaInDB = await IdeaModel.find({})
-        .populate("name")
+       
         .populate("magazine")
         .populate("academy", "name")
+        .populate("user")
         .populate("user")
         .sort({
           createdAt: 1,
@@ -96,7 +81,7 @@ const getAllIdeaWithFilter = async (
         .limit(limit));
     case filterEnum.MY_IDEA:
       return (allIdeaInDB = await IdeaModel.find({ user: id })
-        .populate( "name")
+     
         .populate("magazine")
         .populate("academy", "name")
         .populate("user")
@@ -107,7 +92,7 @@ const getAllIdeaWithFilter = async (
         .limit(limit));
     case filterEnum.APPROVE:
       return (allIdeaInDB = await IdeaModel.find({ isApprove: false })
-        .populate("name")
+        
         .populate("magazine")
         .populate("academy", "name")
         .populate("user")
@@ -118,7 +103,7 @@ const getAllIdeaWithFilter = async (
         .limit(limit));
     default:
       return (allIdeaInDB = await IdeaModel.find({})
-        .populate( "name")
+      
         .populate("magazine")
         .populate("academy", "name")
         .populate("user")
@@ -130,7 +115,7 @@ const getAllIdeaWithFilter = async (
 
 const getIdeaById = async (id) => {
   return await IdeaModel.findById(id)
-    .populate( "name")
+ 
     .populate("magazine", "name")
     .populate("academy", "name")
     .populate("user", "username fullname department role avatar")
@@ -191,24 +176,20 @@ const createIdea = async (
   title,
   description,
   documentLink = "",
-  
   userId,
- 
   academy,
   magazineId
 ) => {
   const findUserIndDeaprtment = await UserModel.findById(userId.toString());
-  const academyInDb = await AcademicYearModel.findOne({ name: academy });
+  const academyInDb = await AcademicYear.findOne({ name: academy });
   const findMagazineInDb = await MagazineModel.findById(magazineId);
 
   const newIdea = new IdeaModel({
     title,
     description,
-    documentLink,
-    // category: categoryInDB._id,
+    documentLink, 
     user: findUserIndDeaprtment._id,
     department: findUserIndDeaprtment.department,
-    
     academy: academyInDb._id,
     magazine: findMagazineInDb._id,
   });
@@ -226,12 +207,11 @@ const commentToAnIdea = async (
   postId,
   content,
   userId,
-  
   origin
 ) => {
   const ideaInDb = await IdeaModel.findById(postId);
   const author = await UserModel.findById(ideaInDb.user);
-  ideaInDb.comments.push({ content, user: userId,  });
+  ideaInDb.comments.push({ content, user: userId });
   await ideaInDb.save();
 };
 
@@ -345,6 +325,97 @@ const getFileUrl = async (filename) => {
   }
 };
 
+const getIdeaStatistics = async () => {
+  try {
+    const academics = await AcademicYear.find({ deleted: false });
+    let acaArray = await Promise.all(
+      academics.map(async (aca) => {
+        const departmentArray = await countIdeasByAcademyAndDepartment(aca._id);
+        return {
+          name: aca.name,
+          departmentArray: departmentArray,
+          total: departmentArray.reduce((total, department) => {
+            return total + department.count;
+          }, 0),
+        };
+      })
+    );
+
+    return acaArray;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const getUserStatistic = async () => {
+  try {
+    const academics = await AcademicYear.find({ deleted: false });
+    let acaArray = await Promise.all(
+      academics.map(async (aca) => {
+        const departmentArray = await countUserByAcademyAndDepartment(aca._id);
+        return {
+          name: aca.name,
+          departmentArray: departmentArray,
+          total: departmentArray.reduce((total, department) => {
+            return total + department.count;
+          }, 0),
+        };
+      })
+    );
+
+    return acaArray;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const countUserByAcademyAndDepartment = async (academyId) => {
+  const ideas = await IdeaModel.find({ academy: academyId, isApprove: true });
+  const departments = await DepartmentModel.find({});
+  let departmentArray = [];
+  const uniqueUsers = Object.values(
+    ideas.reduce((acc, obj) => {
+      acc[obj.user] = obj;
+      return acc;
+    }, {})
+  );
+
+  departments.forEach((department) => {
+    let temp = {
+      name: department.name,
+      count: 0,
+    };
+    uniqueUsers.forEach((idea) => {
+      if (idea.department === department.name) {
+        temp.count += 1;
+      }
+    });
+
+    departmentArray.push(temp);
+  });
+  return departmentArray;
+};
+
+const countIdeasByAcademyAndDepartment = async (academyId) => {
+  const ideas = await IdeaModel.find({ academy: academyId, isApprove: true });
+  const departments = await DepartmentModel.find({});
+  let departmentArray = [];
+  departments.forEach((department) => {
+    let temp = {
+      name: department.name,
+      count: 0,
+    };
+    ideas.forEach((idea) => {
+      if (idea.department === department.name) {
+        temp.count += 1;
+      }
+    });
+
+    departmentArray.push(temp);
+  });
+  return departmentArray;
+};
+
 module.exports = {
   createIdea,
   getAllIdeaWithFilter,
@@ -360,4 +431,6 @@ module.exports = {
   findStaffPostOfDepatment,
   getFileUrl,
   editIdea,
+  getIdeaStatistics,
+  getUserStatistic,
 };

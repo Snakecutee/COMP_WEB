@@ -28,12 +28,14 @@ import Button from "../components/button";
 import CommentItem from "../components/commentItem";
 import { date } from "yup/lib/locale";
 import { roles } from "../constants/role";
+import JSZip from "jszip";
+import FileSaver from "file-saver";
+import { IdentificationIcon } from "@heroicons/react/solid";
 
 
 const IdeaDetail = ({ authenticateReducer, getNewTokenRequest }) => {
   const [ideaDetail, setIdeaDetail] = useState({});
   const [comments, setComments] = useState([]);
-  const [isAnonymous, setIsAnonymous] = useState(false);
   const [reactions, setReactions] = useState([]);
   const [commentContent, setCommentContent] = useState("");
   const [yourReaction, setYourReaction] = useState(null);
@@ -74,7 +76,6 @@ const IdeaDetail = ({ authenticateReducer, getNewTokenRequest }) => {
     const bodyData = {
       userId: user.id,
       content: commentContent,
-      isAnonymous,
     };
     const { status } = await commentToIdea(id, bodyData, token);
     if (status === 201) {
@@ -82,9 +83,7 @@ const IdeaDetail = ({ authenticateReducer, getNewTokenRequest }) => {
       refreshReactionsAndCommentsList();
     }
   };
-  const toggleAnonymous = () => {
-    setIsAnonymous((prev) => !prev);
-  };
+
 
   const getIdeaDetail = useCallback(async () => {
     const { data, status } = await getSingleIdea(id, token);
@@ -118,30 +117,37 @@ const IdeaDetail = ({ authenticateReducer, getNewTokenRequest }) => {
     return () => clearInterval(interval);
   }, [getIdeaDetail, refreshReactionsAndCommentsList]);
 
+  const handleDownload = useCallback(async () => {
+    const zip = new JSZip();
+    let fileUrls = [];
+    ideaDetail?.documentLink?.map((link) =>
+      fileUrls.push({ name: ideaDetail.title, url: link })
+    );
+    const fetchPromises = fileUrls.map(async (item, index) => {
+      const response = await fetch(item.url);
+      const blob = await response.blob();
+      console.log(`${item.name}-${index}.doc`);
+      zip.file(`${item.name}-${index}.doc`, blob);
+    });
+
+    await Promise.all(fetchPromises);
+
+    // Generate the zip file
+    zip.generateAsync({ type: "blob" }).then((content) => {
+      // Save the zip file
+      FileSaver.saveAs(content, `${ideaDetail.title}.zip`);
+    });
+  }, [ideaDetail._id]);
+
   return (
     <>
       <div className="container max-w-xl md:max-w-screen-lg mx-auto bg-white border shadow-sm px-4 py-3 rounded-lg">
         <div className="flex items-center">
-          {ideaDetail?.isAnonymous ? (
-            <div className="w-12 h-12 flex items-center justify-center rounded-[100%] bg-gray-500">
-              <span className="font-medium text-[8px] text-white">
-                Anonymous
-              </span>
-            </div>
-          ) : ideaDetail?.user?.avatar ? (
-            <img
-              className="h-12 w-12 rounded-full"
-              src={ideaDetail?.user?.avatar}
-            />
-          ) : (
-            <div className="w-12 h-12 flex items-center justify-center rounded-[100%] bg-gray-500">
-              <span className="font-medium text-xl text-white">
-                {ideaDetail?.user?.fullname.charAt(0).toUpperCase()}
-              </span>
-            </div>
-          )}
+         
           <div className="ml-2 flex-1">
-           
+            <div className="text-sm ">
+             
+            </div>
             <div className="text-gray-500 text-xs ">
               {ideaDetail?.user?.role} - {ideaDetail.user?.department}
             </div>
@@ -192,13 +198,12 @@ const IdeaDetail = ({ authenticateReducer, getNewTokenRequest }) => {
           {ideaDetail.description}
         </p>
         {ideaDetail?.documentLink && (
-          <a
-            className="bg-blue-400 w-fit px-3 py-2 rounded-md my-2 text-white"
-            href={ideaDetail.documentLink}
-          >
-            {" "}
-            Download
-          </a>
+          <Button
+            icon={IdentificationIcon}
+            type="primary"
+            title="Download All"
+            onClick={handleDownload}
+          />
         )}
         {!disableLike ? (
           <div className="flex gap-3 items-center mt-3"></div>
@@ -230,7 +235,7 @@ const IdeaDetail = ({ authenticateReducer, getNewTokenRequest }) => {
                   onChange={(e) => setCommentContent(e.target.value)}
                   placeholder="Leave your comment"
                 />
-                
+            
               </div>
               <Button
                 role="button"
@@ -255,7 +260,7 @@ const IdeaDetail = ({ authenticateReducer, getNewTokenRequest }) => {
                 time={comment.createdAt}
                 user={comment?.user}
                 content={comment?.content}
-               
+        
               />
             ))}
         </div>

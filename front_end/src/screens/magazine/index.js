@@ -9,6 +9,7 @@ import { getNewToken } from "../../store/actions/authenticateAction";
 import InputField from "../../components/inputField";
 import CreateAcademicYear from "../../components/CreateAcademicYear";
 import UpdateAcademicYear from "../../components/UpdateAcademicYear";
+import DateTimePicker from "../../components/DateTimePicker";
 
 import ErrorMessageCustom from "../../components/errorMessage";
 import {
@@ -39,6 +40,7 @@ const magazineTableHead = [
   "End Date",
   "Department",
   "Academy",
+  "Closure Date",
   "Action",
 ];
 
@@ -57,6 +59,7 @@ const errorInitial = {
   endDate: "",
   department: "",
   academy: "",
+  closureDate: "",
 };
 const MagazinePage = ({ getNewTokenRequest, authenticateReducer }) => {
   const [magazines, setMagazines] = useState([]);
@@ -68,6 +71,7 @@ const MagazinePage = ({ getNewTokenRequest, authenticateReducer }) => {
   const [defaultDepartment, setDefaultDepartment] = useState("");
   const [defaultAcademy, setDefaultAcademy] = useState("");
   const [openUpdateMagazine, setOpenUpdateMagazine] = useState(false);
+  const [closureDate, setClosureDate] = useState(new Date());
 
   const [editMagazineId, setEditMagazineId] = useState("");
   const [errors, setErrors] = useState(errorInitial);
@@ -87,7 +91,7 @@ const MagazinePage = ({ getNewTokenRequest, authenticateReducer }) => {
     );
     if (status === 200) {
       setAcademic(data);
-      if (!openUpdateMagazine) setDefaultAcademy(data[0].name);
+      if (!openUpdateMagazine) setDefaultAcademy(data[0]?.name);
     } else {
       toast.error(data.message);
     }
@@ -148,6 +152,13 @@ const MagazinePage = ({ getNewTokenRequest, authenticateReducer }) => {
       new Date(date[0].endDate).getTime()
         ? ""
         : "EndDate need after start date";
+    temp.closureDate =
+      closureDate !== undefined ? "" : "This field is required";
+    temp.closureDate =
+      new Date(date[0].startDate).getTime() < new Date(closureDate).getTime() &&
+      new Date(closureDate).getTime() < new Date(date[0].endDate).getTime()
+        ? ""
+        : "Closure date need after start date and befor end date";
 
     setErrors({ ...temp });
     return Object.values(temp).every((x) => x === "");
@@ -165,6 +176,7 @@ const MagazinePage = ({ getNewTokenRequest, authenticateReducer }) => {
             description: description,
             department: defaultDepartment,
             academy: defaultAcademy,
+            closureDate: closureDate,
           },
           token
         );
@@ -181,6 +193,7 @@ const MagazinePage = ({ getNewTokenRequest, authenticateReducer }) => {
         setDate(dateInitial);
         setOpen(false);
         setErrors(errorInitial);
+        setClosureDate(new Date());
         loadMagazine();
       } else {
         toast.error(data.message);
@@ -232,6 +245,7 @@ const MagazinePage = ({ getNewTokenRequest, authenticateReducer }) => {
             key: "selection",
           },
         ];
+        setClosureDate(data.closureDate && new Date(data.closureDate));
         setDate(date);
       }
     };
@@ -288,6 +302,9 @@ const MagazinePage = ({ getNewTokenRequest, authenticateReducer }) => {
           <div className="text-left">{item.academy.name}</div>
         </td>
         <td className="p-2 whitespace-nowrap">
+          <div className="text-left">{dateFormatter(item.closureDate)}</div>
+        </td>
+        <td className="p-2 whitespace-nowrap">
           <div className="flex gap-3">
             <Button
               icon={IdentificationIcon}
@@ -333,6 +350,9 @@ const MagazinePage = ({ getNewTokenRequest, authenticateReducer }) => {
           </td>
           <td className="p-2 whitespace-nowrap">
             <div className="text-left">{item.academy.name}</div>
+          </td>
+          <td className="p-2 whitespace-nowrap">
+            <div className="text-left">{dateFormatter(item.closureDate)}</div>
           </td>
           <td className="p-2 whitespace-nowrap">
             <div className="flex gap-3">
@@ -386,6 +406,7 @@ const MagazinePage = ({ getNewTokenRequest, authenticateReducer }) => {
           endDate: date[0].endDate,
           department: defaultDepartment,
           academy: defaultAcademy,
+          closureDate: closureDate,
         });
         return { data, status };
       };
@@ -458,6 +479,14 @@ const MagazinePage = ({ getNewTokenRequest, authenticateReducer }) => {
             {errors.endDate.length > 0 && (
               <ErrorMessageCustom message={errors.endDate} />
             )}
+            <label className="mr-auto text-xl text-900">Closure Date</label>
+            <DateTimePicker
+              value={closureDate && closureDate.toLocaleDateString("en-CA")}
+              onChange={(e) => setClosureDate(new Date(e.target.value))}
+            />
+            {errors.closureDate.length > 0 && (
+              <ErrorMessageCustom message={errors.closureDate} />
+            )}
             <SelectOption
               defaultValue={defaultDepartment}
               listData={departments.filter((item) => !item.deleted)}
@@ -502,6 +531,14 @@ const MagazinePage = ({ getNewTokenRequest, authenticateReducer }) => {
           )}
           {errors.endDate.length > 0 && (
             <ErrorMessageCustom message={errors.endDate} />
+          )}
+          <label className="mr-auto text-xl text-900">Closure Date</label>
+          <DateTimePicker
+            value={closureDate.toLocaleDateString("en-CA")}
+            onChange={(e) => setClosureDate(new Date(e.target.value))}
+          />
+          {errors.closureDate.length > 0 && (
+            <ErrorMessageCustom message={errors.closureDate} />
           )}
           <SelectOption
             defaultValue={defaultDepartment}

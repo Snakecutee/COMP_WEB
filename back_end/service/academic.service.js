@@ -6,6 +6,7 @@ const archiver = require("archiver");
 const createAcademicYear = async (academicYear) => {
   const { startDate, endDate, name, description } = academicYear;
 
+
   if (startDate === "" && endDate === "" && name === "") {
     throw new Error("StartDate, EndDate, Name and ClosureDate is required");
     return;
@@ -91,14 +92,12 @@ const archiveAllDocuments = async () => {
 };
 
 const exportCsvFromDb = async () => {
-  const allIdeaInDb = await Idea.find({ }).populate(
-    
-    "name"
-  );
+  const allIdeaInDb = await Idea.find({ isAnonymous: false })
+
   const jsonToParse = allIdeaInDb.map((idea) => ({
     Title: idea.title,
     Description: idea.description,
-    
+
     Comments: idea.comments.length,
     "Total Reactions": idea.reactions.length,
   }));
@@ -107,12 +106,11 @@ const exportCsvFromDb = async () => {
 
 const anonymousIdeas = async () => {
   const ideaInDB = await Idea.find({ isAnonymous: true })
-    .populate( "name")
+   
     .populate("user", "fullname username department");
   const jsonToParse = ideaInDB.map((idea) => ({
     Title: idea.title,
     Description: idea.description,
-  
     Comments: idea.comments.length,
     "Total Reactions": idea.reactions.length,
     author: idea.user.fullname,

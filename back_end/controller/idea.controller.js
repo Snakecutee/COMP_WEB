@@ -13,6 +13,8 @@ const {
   findStaffPostOfDepatment,
   getFileUrl,
   editIdea,
+  getIdeaStatistics,
+  getUserStatistic,
 } = require("../service/idea.service");
 
 const getAllIdeas = async (req, res) => {
@@ -43,7 +45,7 @@ const getSingleIdea = async (req, res) => {
 };
 
 const commentToIdea = async (req, res) => {
-  const { userId, content, } = req.body;
+  const { userId, content } = req.body;
   const { id } = req.params;
   const origin = req.get("origin");
 
@@ -64,8 +66,6 @@ const createIdeaWithDocument = async (req, res) => {
     title,
     description,
     documentLink,
-    
-    
     academy,
     magazineId,
   } = req.body;
@@ -74,9 +74,7 @@ const createIdeaWithDocument = async (req, res) => {
     title,
     description,
     documentLink,
-    
     userId,
-   
     academy,
     magazineId
   );
@@ -115,6 +113,16 @@ const uploadSupportDocument = async (req, res) => {
 
   res.status(201).json({ documentLink });
 };
+
+const statisticsIdeas = async (req, res) => {
+  const data = await getIdeaStatistics();
+  res.status(201).json(data);
+};
+
+const statisticsUsers = async (req, res) => {
+  const data = await getUserStatistic();
+  res.status(201).json(data);
+};
 module.exports = {
   createIdeaWithDocument,
   getAllIdeas,
@@ -129,4 +137,6 @@ module.exports = {
   findPostOfDepartment,
   uploadSupportDocument,
   getEndateIdeas,
+  statisticsIdeas,
+  statisticsUsers,
 };

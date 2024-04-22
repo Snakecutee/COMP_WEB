@@ -77,19 +77,7 @@ const IdeaList = ({ authenticateReducer, getNewTokenRequest }) => {
           <h3 className="font-black text-gray-600 text-3xl">
           List My Ideas
           </h3>
-          {/* <select
-            className="border-none"
-            value={filterOption}
-            onChange={handleFilterChange}
-          >
-            <option value={filters.VIEW}>View</option>
-            <option value={filters.ALPHABET}>Alphabet</option>
-            <option value={filters.DATE_ASC}>Newest</option>
-            <option value={filters.DATE_DESC}>Oldest</option>
-            <option value={filters.POPULAR}>Popular</option>
-            <option value={filters.LIKE}>Upvote</option>
-            <option value={filters.DISLIKE}>Downvote</option>
-          </select> */}
+       
         </div>
         <ul className="px-5 py-2">
           {ideas.map((item, index) => (

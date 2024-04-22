@@ -208,6 +208,9 @@ export const getAllIdeaWithFilter = (filter, page = 1, token) =>
   apiInstance.get(`/ideas?filter=${filter}&page=${page}`, {
     headers: { Authorization: `Bearer ${token}` },
   });
+
+export const getAllIdeaEndDate = (filter, page = 1) =>
+  apiInstance.get(`/ideas/end-date?filter=${filter}&page=${page}`);
 export const createIdea = (formData, token) =>
   apiInstance.post(
     "/ideas/create",
@@ -312,3 +315,13 @@ export const deleteMagazing = (token, id) =>
       headers: { Authorization: `Bearer ${token}` },
     }
   );
+
+export const getIdeaStatistics = (token) =>
+  apiInstance.get(`/ideas/statistics`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+export const getUserStatistics = (token) =>
+  apiInstance.get(`/ideas/statistics-user`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
